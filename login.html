@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tickitz - Login</title>
+    <!-- Google Font: Mulish -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap"
+      rel="stylesheet"
+    />
+    <!-- link:css -->
+    <link rel="stylesheet" href="/assets/css/login.css" />
+  </head>
+  <body>
+    <div class="background"></div>
+
+    <div class="container">
+      <div class="logo"><img src="assets/images/tickitz.svg" /></div>
+
+      <div class="form-container">
+        <div class="welcome-header">
+          Welcome Back<span style="margin-left: 8px">👋</span>
+        </div>
+        <div class="welcome-subtitle">
+          Sign in with your data that you entered during your registration
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Enter your email" />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-field">
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+            />
+            <span class="eye-icon"><img src="assets/images/eye.svg" /></span>
+          </div>
+          <a href="#" class="forgot-password">Forgot your password?</a>
+        </div>
+
+        <button class="login-btn">
+          <a href="index.html" style="text-decoration: none; color: white"
+            >Login</a
+          >
+        </button>
+
+        <div class="divider">Or</div>
+
+        <div class="social-buttons">
+          <a href="#" class="social-button">
+            <span class="social-icon google-icon"
+              ><img src="assets/images/google.svg"
+            /></span>
+            Google
+          </a>
+          <a href="#" class="social-button">
+            <span class="social-icon facebook-icon"
+              ><img src="assets/images/fb.svg"
+            /></span>
+            Facebook
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
