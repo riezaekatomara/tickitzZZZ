@@ -77,7 +77,7 @@ function MovieTicketing() {
       <main>
         {/* Hero Section */}
         <section className="relative w-full h-[462px]">
-          <div className="absolute top-0 left-0 w-screen h-full bg-[url('../src/assets/png/bg-avanger.png')] bg-cover bg-center bg-no-repeat brightness-50"></div>
+          <div className="absolute top-0 left-0 w-screen h-full bg-[url('../public/png/bg-avanger.png')] bg-cover bg-center bg-no-repeat brightness-50"></div>
           <div className="relative top-[150px] flex flex-col text-white ml-24">
             <p className="text-[18px] text-lg leading-[50px]">
               List Movie of the Week
