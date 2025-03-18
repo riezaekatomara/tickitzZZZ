@@ -8,7 +8,7 @@ function Login() {
       {/* Background */}
       <div
         className="fixed top-0 left-0 w-full h-full bg-cover bg-center brightness-70 -z-10"
-        style={{ backgroundImage: "url('../src/assets/png/bg-avanger.png')" }}
+        style={{ backgroundImage: "url('/src/assetspng\bg-avanger.png')" }}
       ></div>
 
       {/* Container */}

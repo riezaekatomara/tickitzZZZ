@@ -104,7 +104,10 @@ const Home = () => {
               </Link>
             </li>
             <li>
-              <Link to="#" className="text-gray-700 hover:text-blue-600">
+              <Link
+                to="/payment-info"
+                className="text-gray-700 hover:text-blue-600"
+              >
                 Buy Ticket
               </Link>
             </li>
@@ -227,7 +230,7 @@ const Home = () => {
                       Details
                     </button>
                   </Link>
-                  <Link to={"#"}>
+                  <Link to={"/payment-info"}>
                     <button className="cursor-pointer px-4 py-2 bg-primary text-white rounded w-[150px] hover:bg-blue-700 transition-colors duration-300">
                       Buy Ticket
                     </button>
@@ -304,7 +307,7 @@ const Home = () => {
                       Details
                     </button>
                   </Link>
-                  <Link to={"#"}>
+                  <Link to={"/payment-info"}>
                     <button className="cursor-pointer px-4 py-2 bg-primary text-white rounded w-[150px] hover:bg-blue-700 transition-colors duration-300">
                       Buy Ticket
                     </button>
