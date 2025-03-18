@@ -156,7 +156,12 @@ const Home = () => {
               key={movie.id}
               src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
               alt={movie.title}
-              className={`w-[185px] overflow-hidden 
+              className={`w-[185px] overflow-hidden
+                ${
+                  index === 0 || index === 1
+                    ? "rounded-t-[20px]"
+                    : "rounded-b-[20px]"
+                }
                 ${
                   index === 1 || index === 2 ? "h-[250px]" : "h-[138px]"
                 } object-cover rounded-${index < 2 ? "t" : "b"}-[20px] ${
