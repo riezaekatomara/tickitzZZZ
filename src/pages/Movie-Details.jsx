@@ -43,7 +43,10 @@ const MovieDetails = () => {
               </Link>
             </li>
             <li>
-              <Link to="#" className="text-gray-700 hover:text-blue-600">
+              <Link
+                to="/payment-info"
+                className="text-gray-700 hover:text-blue-600"
+              >
                 Buy Ticket
               </Link>
             </li>
@@ -73,7 +76,7 @@ const MovieDetails = () => {
 
       {/* Movie Details */}
       <div className="max-w-5xl mx-auto p-6 bg-white mt-6 shadow-md rounded-md">
-        <div className="flex">
+        <div className="flex mt-23">
           <img
             src="../src/assets/png/spiderman.png"
             alt="Spider-Man: Homecoming"

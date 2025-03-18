@@ -152,7 +152,7 @@ function MovieTicketing() {
                       Details
                     </button>
                   </Link>
-                  <Link to={"#"}>
+                  <Link to={"/payment-info"}>
                     <button className="cursor-pointer px-4 py-2 bg-primary text-white rounded w-[150px] hover:bg-blue-700 transition-colors duration-300">
                       Buy Ticket
                     </button>
@@ -199,22 +199,24 @@ function MovieTicketing() {
       </main>
 
       {/* Newsletter Section */}
-      <section className="bg-primary text-white text-center rounded-lg py-16 px-10 mx-10">
+      <section className="bg-primary text-white text-center rounded-lg py-15 lg:py-16 px-10 mx-10 lg:mr-[8%] lg:ml-[8%]">
         <h3 className="text-2xl font-bold mb-8">Subscribe to our newsletter</h3>
-        <form className="flex gap-3 justify-center">
-          <input
-            type="text"
-            placeholder="First name"
-            className="w-60 h-12 px-4 border rounded-lg bg-transparent bg-opacity-50"
-          />
-          <input
-            type="email"
-            placeholder="Email address"
-            className="w-60 h-12 px-4 border rounded-lg bg-transparent bg-opacity-50"
-          />
+        <form className="flex lg:flex-row flex-col gap-4 justify-center">
+          <div className="text-center">
+            <input
+              type="text"
+              placeholder="First name"
+              className="w-60 h-12 px-4 border rounded-lg bg-transparent bg-opacity-50 lg:mr-3.5 mb-4 lg:mb-0"
+            />
+            <input
+              type="email"
+              placeholder="Email address"
+              className="w-60 h-12 px-4 border rounded-lg bg-transparent bg-opacity-50"
+            />
+          </div>
           <button
             type="submit"
-            className="bg-white text-primary px-6 py-3 rounded-lg font-semibold"
+            className="bg-white text-primary lg:px-6 py-3 rounded-lg font-semibold mr-9.5 ml-9 lg:ml-0"
           >
             Subscribe Now
           </button>
@@ -222,9 +224,9 @@ function MovieTicketing() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white py-16 px-10">
-        <div className="flex justify-between gap-10">
-          <div className="max-w-[300px]">
+      <footer className="bg-white py-12 lg:py-16 lg:px-10 lg:mr-[5.8%] lg:ml-[1.8%] ml-[10%]">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center lg:justify-between gap-10">
+          <div className="max-w-[300px] lg:relative lg:bottom-3 lg:left-[50px]">
             <img
               src={"../src/assets/svg/logo-tickitz.svg"}
               alt="Tickitz Logo"
@@ -234,34 +236,34 @@ function MovieTicketing() {
               Stop wasting time. Buy tickets conveniently, watch movies quietly.
             </p>
           </div>
-          <div>
+          <div className="lg:relative lg:top-3.5">
             <h4 className="text-lg font-bold mb-4">Explore</h4>
-            <ul className="text-gray-600">
-              <li>
+            <ul className="text-gray-600 flex flex-row lg:flex lg:flex-col gap-7 lg:gap-0">
+              <li className="mb-2">
                 <a href="#" className="py-4">
                   Cinemas
                 </a>
               </li>
-              <li>
+              <li className="mb-2">
                 <a href="#" className="py-4">
                   Movies List
                 </a>
               </li>
-              <li>
+              <li className="mb-2">
                 <a href="#" className="py-4">
                   My Ticket
                 </a>
               </li>
-              <li>
+              <li className="mb-2">
                 <a href="#" className="py-4">
                   Notification
                 </a>
               </li>
             </ul>
           </div>
-          <div>
-            <h4 className="text-lg font-bold mb-4">Our Sponsor</h4>
-            <div className="flex flex-col gap-3">
+          <div className="lg:relative lg:top-7">
+            <h4 className="text-lg font-bold mb-4 ">Our Sponsor</h4>
+            <div className="flex lg:flex-col flex-row gap-3">
               <img
                 className="w-[121px] h-[45px]"
                 src={"../src/assets/svg/ebv.svg"}
@@ -279,24 +281,32 @@ function MovieTicketing() {
               />
             </div>
           </div>
-          <div>
+          <div className="lg: relative lg:top-7">
             <h4 className="text-lg font-bold mb-4">Follow Us</h4>
-            <ul className="text-gray-600">
-              <li className="flex">
+            <ul className="text-gray-600 flex flex-row lg:flex-col gap-10 lg:gap-0">
+              <li className="flex mb-4">
                 <img src="../src/assets/svg/fb.svg"></img>
-                <a href="#">Tickitz Cinema id</a>
+                <a href="#" className="hidden lg:inline">
+                  Tickitz Cinema id
+                </a>
               </li>
-              <li className="flex">
+              <li className="flex mb-4">
                 <img src="../src/assets/svg/ig.svg"></img>
-                <a href="#">tickitz.id</a>
+                <a href="#" className="hidden lg:inline">
+                  tickitz.id
+                </a>
               </li>
-              <li className="flex">
+              <li className="flex mb-4">
                 <img src="../src/assets/svg/x.svg"></img>
-                <a href="#">tickitz.id</a>
+                <a href="#" className="hidden lg:inline">
+                  tickitz.id
+                </a>
               </li>
-              <li className="flex">
+              <li className="flex mb-4">
                 <img src="../src/assets/svg/youtobe.svg"></img>
-                <a href="#">Tickitz Cinema id</a>
+                <a href="#" className="hidden lg:inline">
+                  Tickitz Cinema id
+                </a>
               </li>
             </ul>
           </div>
@@ -304,7 +314,7 @@ function MovieTicketing() {
       </footer>
 
       {/* Copyright */}
-      <footer className="text-center py-6 border-t border-gray-200">
+      <footer className="text-center lg:py-6">
         <p className="text-gray-600">© 2020 Tickitz. All Rights Reserved.</p>
       </footer>
     </>

@@ -44,13 +44,16 @@ function Movie() {
               </Link>
             </li>
             <li>
-              <Link to="#" className="text-gray-700 hover:text-blue-600">
+              <Link
+                to="/payment-info"
+                className="text-gray-700 hover:text-blue-600"
+              >
                 Buy Ticket
               </Link>
             </li>
           </ul>
 
-          {/* Button Container */}
+          {/* Button Nav */}
           <div className="flex flex-col sm:flex-row mt-4 sm:mt-0 space-y-2 sm:space-y-0 sm:space-x-4 lg:relative lg:left-[16px]">
             <Link to="/login">
               <button
