@@ -6,8 +6,8 @@ import Home from "./pages/Home.jsx";
 import Movie from "./pages/Movie.jsx";
 import Login from "./pages/Login.jsx";
 import MovieDetails from "./pages/Movie-Details.jsx";
+import PaymentInfo from "./pages/Payment-Info.jsx";
 // import SeatSelectionPage from "./pages/Seat.jsx";
-// import PaymentInfo from "./pages/PaymentInfo.jsx";
 
 function App() {
   return (
@@ -16,8 +16,9 @@ function App() {
       <Route path="/movie" element={<Movie />} />
       <Route path="/login" element={<Login />} />
       <Route path="/movie-details" element={<MovieDetails />} />
+      <Route path="/payment-info" element={<PaymentInfo />} />
       {/* <Route path="/seat" element={<SeatSelectionPage />} />
-      <Route path="/payment-info" element={<PaymentInfo />} /> */}
+       */}
     </Routes>
   );
 }
