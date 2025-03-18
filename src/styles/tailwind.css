@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme {
+@theme static {
   --font-mulish: "Mulish", serif;
   --color-primary: #1d4ed8;
 }
