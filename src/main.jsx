@@ -1,32 +1,13 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router";
+import App from "./App.jsx";
 import "./styles/tailwind.css";
-import Home from "./pages/Home.jsx";
-import Movie from "./pages/Movie.jsx";
-import Login from "./pages/Login.jsx";
-import MovieDetails from "./pages/Movie-Details.jsx";
-import PaymentInfo from "./pages/Payment-Info.jsx";
-// import SeatSelectionPage from "./pages/Seat.jsx";
 
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/movie" element={<Movie />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/movie-details" element={<MovieDetails />} />
-      <Route path="/payment-info" element={<PaymentInfo />} />
-      {/* <Route path="/seat" element={<SeatSelectionPage />} />
-       */}
-    </Routes>
-  );
-}
-
-createRoot(document.getElementById("root")).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </StrictMode>
+  </React.StrictMode>
 );
