@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme static {
+@theme {
   --font-mulish: "Mulish", serif;
   --color-primary: #1d4ed8;
 }
@@ -10,26 +10,4 @@
     @apply font-mulish;
     margin: 0;
   }
-  /* .hero-images {
-    @apply display: grid;
-    grid-template-columns: 150px 150px;
-    grid-template-rows: 120px 50px 120px;
-    gap: 12px;
-    grid-template-areas:
-      "a b"
-      "c b"
-      "c d";
-  } */
-  /* .bg-image-john {
-    background-image: url(""); 
-  }
-  .bg-image-roblog {
-    background-image: url("./src/assets/png/roblog.png");
-  }
-  .bg-image-spider {
-    background-image: url("./src/assets/png/spiderman.png");
-  }
-  .bg-image- {
-    background-image: url("./src/assets/png/lion.png");
-  } */
 }
