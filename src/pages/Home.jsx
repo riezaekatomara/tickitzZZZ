@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import centangS from "../assets/svg/centang-s.svg";
 import centang from "../assets/svg/centang-group.svg";
 import message from "../assets/svg/message-group.svg";
-import logo from "../assets/svg/logo-tickitz.svg";
-import menuIcon from "../assets/svg/menu-right.svg";
+import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
 
 const Home = () => {
   const API_KEY = "6269e9b68e0c503c6621dfd9e2c6da29";
@@ -65,78 +65,11 @@ const Home = () => {
     }
   };
 
-  const [isNavVisible, setIsNavVisible] = useState(false);
-
-  const toggleNav = () => {
-    setIsNavVisible(!isNavVisible);
-  };
   return (
     <div className="bg-white">
-      {/* Header */}
-      <header className="lg:flex lg:flex-rowt text-center lg:justify-between fixed top-0 left-0 w-full z-[1000] bg-white shadow-md p-4">
-        <div className="flex justify-between items-center px-4 lg:px-8">
-          <img src={logo} className="h-10 relative left-11" alt="Logo" />
-
-          {/* Hamburger Icon (Mobile) */}
-          <div
-            className="pr-[36px] sm:hidden cursor-pointer"
-            onClick={toggleNav}
-          >
-            <img src={menuIcon} alt="Menu" className="h-8 w-8" />
-          </div>
-        </div>
-
-        {/* Navbar */}
-        <nav
-          className={`${
-            isNavVisible ? "flex" : "hidden"
-          } flex-col sm:flex sm:flex-row absolute lg:pr-[85px] sm:relative top-full w-full sm:w-auto bg-white sm:bg-transparent shadow-md sm:shadow-none py-4 sm:p-0`}
-        >
-          <ul className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 lg:pr-[220px] lg:gap-8 lg:text-center">
-            <li>
-              <Link to="/" className="text-gray-700 hover:text-blue-600">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link to="/movie" className="text-gray-700 hover:text-blue-600">
-                Movie
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/payment-info"
-                className="text-gray-700 hover:text-blue-600"
-              >
-                Buy Ticket
-              </Link>
-            </li>
-          </ul>
-
-          {/* Button Container */}
-          <div className="flex flex-col sm:flex-row mt-4 sm:mt-0 space-y-2 sm:space-y-0 sm:space-x-4 lg:relative lg:left-[16px]">
-            <Link to="/login">
-              <button
-                onClick={() => navigate("/login")}
-                className="text-primary px-4 py-2 border rounded cursor-pointer"
-              >
-                Sign In
-              </button>
-            </Link>
-            <Link to="#">
-              <button
-                onClick={() => navigate("#")}
-                className="bg-primary text-white px-4 py-2 rounded cursor-pointer"
-              >
-                Sign Up
-              </button>
-            </Link>
-          </div>
-        </nav>
-      </header>
-
+      <Header />
       {/* Hero Section */}
-      <section className="pt-13 px-8 flex flex-col md:flex-row md:justify-between items-center mt-20 mr-[5%] ml-[5%]">
+      <section className="pt-13 px-8 flex flex-col md:flex-row md:justify-between items-center mr-[5%] ml-[5%]">
         <div className="relative bottom-12 md:w-1/2 text-center md:text-left ">
           <h2 className="text-xl text-blue-600 font-semibold leading-[50px]">
             MOVIE TICKET PURCHASES #1 IN INDONESIA
@@ -235,7 +168,7 @@ const Home = () => {
                       Details
                     </button>
                   </Link>
-                  <Link to={"/payment-info"}>
+                  <Link to={"/seat-order"}>
                     <button className="cursor-pointer px-4 py-2 bg-primary text-white rounded w-[150px] hover:bg-blue-700 transition-colors duration-300">
                       Buy Ticket
                     </button>
@@ -365,100 +298,7 @@ const Home = () => {
         </form>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-white py-12 lg:py-16 lg:px-10 lg:mr-[5.8%] lg:ml-[1.8%] ml-[10%]">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center lg:justify-between gap-10">
-          <div className="max-w-[300px] lg:relative lg:bottom-3 lg:left-[50px]">
-            <img
-              src={"../src/assets/svg/logo-tickitz.svg"}
-              alt="Tickitz Logo"
-              className="w-[183.8px] h-[71.4px]"
-            />
-            <p className="text-gray-600 mt-4">
-              Stop wasting time. Buy tickets conveniently, watch movies quietly.
-            </p>
-          </div>
-          <div className="lg:relative lg:top-3.5">
-            <h4 className="text-lg font-bold mb-4">Explore</h4>
-            <ul className="text-gray-600 flex flex-row lg:flex lg:flex-col gap-7 lg:gap-0">
-              <li className="mb-2">
-                <a href="#" className="py-4">
-                  Cinemas
-                </a>
-              </li>
-              <li className="mb-2">
-                <a href="#" className="py-4">
-                  Movies List
-                </a>
-              </li>
-              <li className="mb-2">
-                <a href="#" className="py-4">
-                  My Ticket
-                </a>
-              </li>
-              <li className="mb-2">
-                <a href="#" className="py-4">
-                  Notification
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div className="lg:relative lg:top-7">
-            <h4 className="text-lg font-bold mb-4 ">Our Sponsor</h4>
-            <div className="flex lg:flex-col flex-row gap-3">
-              <img
-                className="w-[121px] h-[45px]"
-                src={"../src/assets/svg/ebv.svg"}
-                alt="Ebu Sponsor"
-              />
-              <img
-                className="w-[121px] h-[45px]"
-                src={"../src/assets/svg/cine.svg"}
-                alt="Cine Sponsor"
-              />
-              <img
-                className="w-[121px] h-[45px]"
-                src={"../src/assets/svg/hiflix.svg"}
-                alt="Hif Sponsor"
-              />
-            </div>
-          </div>
-          <div className="lg: relative lg:top-7">
-            <h4 className="text-lg font-bold mb-4">Follow Us</h4>
-            <ul className="text-gray-600 flex flex-row lg:flex-col gap-10 lg:gap-0">
-              <li className="flex mb-4">
-                <img src="../src/assets/svg/fb.svg"></img>
-                <a href="#" className="hidden lg:inline">
-                  Tickitz Cinema id
-                </a>
-              </li>
-              <li className="flex mb-4">
-                <img src="../src/assets/svg/ig.svg"></img>
-                <a href="#" className="hidden lg:inline">
-                  tickitz.id
-                </a>
-              </li>
-              <li className="flex mb-4">
-                <img src="../src/assets/svg/x.svg"></img>
-                <a href="#" className="hidden lg:inline">
-                  tickitz.id
-                </a>
-              </li>
-              <li className="flex mb-4">
-                <img src="../src/assets/svg/youtobe.svg"></img>
-                <a href="#" className="hidden lg:inline">
-                  Tickitz Cinema id
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </footer>
-
-      {/* Copyright */}
-      <footer className="text-center lg:py-6">
-        <p className="text-gray-600">© 2020 Tickitz. All Rights Reserved.</p>
-      </footer>
+      <Footer />
     </div>
   );
 };

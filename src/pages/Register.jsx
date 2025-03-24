@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import Logo from "../assets/svg/logo-tickitz2.svg";
 
-function Login() {
+function Register() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
+  const handleRegister = () => {
     if (email && password) {
-      // Simpan data login di localStorage atau session sebagai alternatif Redux
+      // Simpan data registrasi di localStorage atau session sebagai alternatif Redux
       localStorage.setItem("user", JSON.stringify({ email, role: "user" }));
       navigate("/");
     } else {
@@ -32,11 +32,18 @@ function Login() {
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-8 w-full">
-          <div className="text-2xl font-bold mb-2 flex items-center">
-            Welcome Back<span className="ml-2">👋</span>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center">
+              <div className="text-2xl font-bold">Fill Form</div>
+              <div className="w-4 h-px bg-gray-300 mx-2"></div>
+              <div className="text-gray-500">Activate</div>
+              <div className="w-4 h-px bg-gray-300 mx-2"></div>
+              <div className="text-gray-500">Done</div>
+            </div>
           </div>
+
           <div className="text-gray-500 text-sm mb-6">
-            Sign in with your data that you entered during your registration
+            Activate your account by filling the form below
           </div>
 
           <div className="mb-6">
@@ -45,7 +52,7 @@ function Login() {
             </label>
             <input
               type="email"
-              placeholder="Email"
+              placeholder="Enter your email"
               className="w-full px-4 py-2 border mb-4"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -59,7 +66,7 @@ function Login() {
             <div className="relative">
               <input
                 type="password"
-                placeholder="Password"
+                placeholder="Enter your password"
                 className="w-full px-4 py-2 border mb-4"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -72,19 +79,22 @@ function Login() {
                 />
               </span>
             </div>
-            <Link
-              to="/forgot-password"
-              className="block text-right text-blue-700 text-sm mt-2 hover:underline"
-            >
-              Forgot your password?
-            </Link>
+          </div>
+
+          <div className="mb-6">
+            <label className="flex items-center">
+              <input type="checkbox" className="form-checkbox" />
+              <span className="ml-2 text-gray-700">
+                I agree to terms & conditions
+              </span>
+            </label>
           </div>
 
           <button
-            onClick={handleLogin}
+            onClick={handleRegister}
             className="cursor-pointer w-full bg-blue-600 text-white py-2 rounded"
           >
-            Login
+            Join For Free Now
           </button>
 
           <div className="flex items-center my-6">
@@ -118,10 +128,17 @@ function Login() {
               Facebook
             </Link>
           </div>
+
+          <div className="text-center mt-6">
+            <span className="text-gray-600">Already have an account? </span>
+            <Link to="/login" className="text-blue-700 hover:underline">
+              Log in
+            </Link>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-export default Login;
+export default Register;

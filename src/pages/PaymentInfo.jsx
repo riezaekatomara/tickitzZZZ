@@ -1,6 +1,18 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
+import GooglePay from "../assets/svg/google-pay.svg";
+import Visa from "../assets/svg/visa.svg";
+import Gopay from "../assets/svg/gopay.svg";
+import Paypal from "../assets/svg/paypal.svg";
+import Dana from "../assets/svg/dana.svg";
+import Bca from "../assets/svg/bca.svg";
+import Bri from "../assets/svg/bri.svg";
+import Ovo from "../assets/svg/ovo.svg";
 
 const PaymentInfo = () => {
+  const navigate = useNavigate();
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [formData, setFormData] = useState({
     fullName: "Rieza Eka Tomara",
@@ -17,38 +29,49 @@ const PaymentInfo = () => {
   };
 
   const paymentMethods = [
-    {
-      id: "gpay",
-      name: "Google Pay",
-      logo: "../src/assets/svg/google-pay.svg",
-    },
-    { id: "visa", name: "Visa", logo: "../src/assets/svg/visa.svg" },
-    { id: "gopay", name: "GoPay", logo: "../src/assets/svg/gopay.svg" },
-    { id: "paypal", name: "PayPal", logo: "../src/assets/svg/paypal.svg" },
-    { id: "dana", name: "Dana", logo: "../src/assets/svg/dana.svg" },
-    { id: "bca", name: "BCA", logo: "../src/assets/svg/bca.svg" },
-    { id: "bri", name: "Bank BRI", logo: "../src/assets/svg/bri.svg" },
-    { id: "ovo", name: "OVO", logo: "../src/assets/svg/ovo.svg" },
+    { id: "gpay", name: "Google Pay", logo: GooglePay },
+    { id: "visa", name: "Visa", logo: Visa },
+    { id: "gopay", name: "GoPay", logo: Gopay },
+    { id: "paypal", name: "PayPal", logo: Paypal },
+    { id: "dana", name: "Dana", logo: Dana },
+    { id: "bca", name: "BCA", logo: Bca },
+    { id: "bri", name: "Bank BRI", logo: Bri },
+    { id: "ovo", name: "OVO", logo: Ovo },
   ];
 
   const handlePaymentSelect = (id) => {
     setSelectedPayment(id);
   };
 
-  return (
-    <div className="max-w-md mx-auto bg-white min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
-        <img src="../src/assets/svg/logo-tickitz.svg"></img>
-        <button className="text-2xl">
-          <img src="../src/assets/svg/menu-right.svg"></img>
-        </button>
-      </header>
+  const handleOrderSubmit = () => {
+    if (!selectedPayment) {
+      alert("Pilih metode pembayaran terlebih dahulu!");
+      return;
+    }
 
-      {/* Main Content */}
-      <div className="bg-gray-50 flex-1 px-5 py-6">
-        {/* Payment Info Card */}
-        <div className="bg-white rounded-lg p-6 shadow-sm mb-6">
+    // Simpan data order di localStorage sebagai alternatif Redux
+    const orderData = {
+      name: "Spider-Man: Homecoming",
+      quantity: 3,
+      price: 30,
+      paymentMethod: selectedPayment,
+      customer: formData,
+    };
+
+    // Simpan order dalam localStorage
+    const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+    orders.push(orderData);
+    localStorage.setItem("orders", JSON.stringify(orders));
+
+    alert("Order berhasil disimpan!");
+    navigate("/ticket-result");
+  };
+
+  return (
+    <div className="mx-auto bg-gray-50 min-h-screen flex flex-col">
+      <Header />
+      <div className="flex-1 px-5 py-6 ml-0">
+        <div className="bg-white rounded-lg p-6 shadow-sm mx-60 max-w-4xl">
           <h2 className="text-xl font-bold mb-5">Payment Info</h2>
 
           <div className="mb-4">
@@ -75,17 +98,14 @@ const PaymentInfo = () => {
             <div className="h-px bg-gray-200 mt-3"></div>
           </div>
 
-          <div className="mb-2">
+          <div className="mb-4">
             <p className="text-gray-400 text-sm mb-1">TOTAL PAYMENT</p>
             <p className="text-primary font-bold">$30.00</p>
             <div className="h-px bg-gray-200 mt-3"></div>
           </div>
-        </div>
 
-        <div className="mb-6">
           <h2 className="text-xl font-bold mb-4">Personal Information</h2>
 
-          {/* Full Name */}
           <div className="mb-4">
             <label htmlFor="fullName" className="block text-gray-600 mb-2">
               Full Name
@@ -100,7 +120,6 @@ const PaymentInfo = () => {
             />
           </div>
 
-          {/* Email */}
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-600 mb-2">
               Email
@@ -115,7 +134,6 @@ const PaymentInfo = () => {
             />
           </div>
 
-          {/* Phone Number */}
           <div className="mb-4">
             <label htmlFor="phoneNumber" className="block text-gray-600 mb-2">
               Phone Number
@@ -132,39 +150,46 @@ const PaymentInfo = () => {
               />
             </div>
           </div>
-        </div>
-
-        <div className="mb-6">
           <h2 className="text-xl font-bold mb-4">Payment Method</h2>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {paymentMethods.map((method) => (
-              <div
+              <PaymentMethod
                 key={method.id}
-                className={`border rounded-md p-4 flex items-center justify-center cursor-pointer ${
-                  selectedPayment === method.id
-                    ? "bg-primary"
-                    : "border-gray-300"
-                }`}
-                onClick={() => handlePaymentSelect(method.id)}
-              >
-                <img
-                  src={method.logo}
-                  alt={method.name}
-                  className="h-6 object-contain"
-                />
-              </div>
+                method={method}
+                handlePaymentSelect={handlePaymentSelect}
+                selectedPayment={selectedPayment}
+              />
             ))}
           </div>
+          <br></br>
+          <button
+            onClick={handleOrderSubmit}
+            className="cursor-pointer w-full py-3 bg-primary text-white rounded-md font-bold"
+          >
+            Pay Your Order
+          </button>
         </div>
-
-        {/* Pay Button */}
-        <button className="cursor-pointer w-full py-3 bg-primary text-white rounded-md font-bold">
-          Pay Your Order
-        </button>
       </div>
+
+      <Footer />
     </div>
   );
 };
+
+function PaymentMethod({ method, selectedPayment, handlePaymentSelect }) {
+  return (
+    <button
+      className={`border rounded-md p-4 flex items-center justify-center cursor-pointer ${
+        selectedPayment === method.id
+          ? "bg-primary text-white"
+          : "border-gray-300"
+      }`}
+      onClick={() => handlePaymentSelect(method.id)}
+    >
+      <img src={method.logo} alt={method.name} className="h-6 object-contain" />
+    </button>
+  );
+}
 
 export default PaymentInfo;

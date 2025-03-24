@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
+import Footer from "../components/Footer.jsx";
 
 function MovieTicketing() {
   const [movies, setMovies] = useState([]);
@@ -76,13 +77,13 @@ function MovieTicketing() {
     <>
       <main>
         {/* Hero Section */}
-        <section className="relative w-full h-[462px]">
+        <section className="relative w-full h-[300px] sm:h-[462px]">
           <div className="absolute top-0 left-0 w-screen h-full bg-[url('../public/png/bg-avanger.png')] bg-cover bg-center bg-no-repeat brightness-50"></div>
-          <div className="relative top-[150px] flex flex-col text-white ml-24">
-            <p className="text-[18px] text-lg leading-[50px]">
+          <div className="relative top-[100px] sm:top-[150px] flex flex-col text-white text-center sm:text-left ml-0 sm:ml-24">
+            <p className="text-[16px] sm:text-[18px] leading-[30px] sm:leading-[50px]">
               List Movie of the Week
             </p>
-            <h1 className="text-[48px] text-4xl mb-5">
+            <h1 className="text-[28px] sm:text-[48px] mb-5">
               Experience the Magic of
               <br />
               Cinema: Book Your Ticket
@@ -92,14 +93,14 @@ function MovieTicketing() {
           </div>
         </section>
 
-        {/* Filters */}
-        <section className="flex justify-between items-center px-[5%] py-5">
-          <div className="flex flex-col">
+        {/* Search and Filter Section */}
+        <section className="flex flex-col sm:flex-row justify-between items-center px-[5%] py-5">
+          <div className="flex flex-col mb-4 sm:mb-0">
             <p className="relative top-5 left-0.5 text-[15px]">Cari event</p>
             <img
               src="../src/assets/svg/search2.svg"
               className="w-[24px] h-[24px] relative top-8 left-[8px]"
-            ></img>
+            />
             <input
               type="text"
               placeholder={`           New Born Expert`}
@@ -108,12 +109,12 @@ function MovieTicketing() {
           </div>
           <div className="flex flex-col gap-4">
             <p>Filter</p>
-            <div>
+            <div className="flex flex-wrap justify-center">
               {genreButtons.map((genre) => (
                 <button
                   key={genre}
                   onClick={() => handleGenreClick(genre)}
-                  className={`bg-white border-none mx-2 ${
+                  className={`bg-white border-none mx-1 sm:mx-2 ${
                     activeGenre === genre
                       ? "bg-blue-700 text-white rounded"
                       : ""
@@ -126,15 +127,15 @@ function MovieTicketing() {
           </div>
         </section>
 
-        {/* Movie Grid */}
+        {/* Movie Grid Section */}
         <section
           id="movieGrid"
-          className="grid grid-cols-4 gap-6 px-8 py-10 lg:mr-[33px] lg:ml-[59px]"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 sm:px-8 py-10"
         >
           {movies.map((movie) => (
             <div
               key={movie.id}
-              className="group w-60 bg-white shadow-lg rounded-[6px] overflow-hidden text-center"
+              className="group w-full sm:w-60 bg-white shadow-lg rounded-[6px] overflow-hidden text-center"
             >
               <div className="relative">
                 <img
@@ -152,7 +153,7 @@ function MovieTicketing() {
                       Details
                     </button>
                   </Link>
-                  <Link to={"/payment-info"}>
+                  <Link to={"/seat-order"}>
                     <button className="cursor-pointer px-4 py-2 bg-primary text-white rounded w-[150px] hover:bg-blue-700 transition-colors duration-300">
                       Buy Ticket
                     </button>
@@ -176,7 +177,7 @@ function MovieTicketing() {
           ))}
         </section>
 
-        {/* Pagination */}
+        {/* Pagination Section */}
         <section className="flex justify-center items-center gap-4 my-8">
           <button className="p-2 border border-gray-300 bg-white cursor-pointer">
             &lt;
@@ -199,124 +200,33 @@ function MovieTicketing() {
       </main>
 
       {/* Newsletter Section */}
-      <section className="bg-primary text-white text-center rounded-lg py-15 lg:py-16 px-10 mx-10 lg:mr-[8%] lg:ml-[8%]">
-        <h3 className="text-2xl font-bold mb-8">Subscribe to our newsletter</h3>
-        <form className="flex lg:flex-row flex-col gap-4 justify-center">
+      <section className="bg-primary text-white text-center rounded-lg py-8 sm:py-15 lg:py-16 px-4 sm:px-10 mx-4 sm:mx-10 lg:mr-[8%] lg:ml-[8%]">
+        <h3 className="text-xl sm:text-2xl font-bold mb-8">
+          Subscribe to our newsletter
+        </h3>
+        <form className="flex flex-col sm:flex-row gap-4 justify-center">
           <div className="text-center">
             <input
               type="text"
               placeholder="First name"
-              className="w-60 h-12 px-4 border rounded-lg bg-transparent bg-opacity-50 lg:mr-3.5 mb-4 lg:mb-0"
+              className="w-full sm:w-60 h-12 px-4 border rounded-lg bg-transparent bg-opacity-50 mb-4 sm:mb-0 sm:mr-3.5"
             />
             <input
               type="email"
               placeholder="Email address"
-              className="w-60 h-12 px-4 border rounded-lg bg-transparent bg-opacity-50"
+              className="w-full sm:w-60 h-12 px-4 border rounded-lg bg-transparent bg-opacity-50"
             />
           </div>
           <button
             type="submit"
-            className="bg-white text-primary lg:px-6 py-3 rounded-lg font-semibold mr-9.5 ml-9 lg:ml-0"
+            className="bg-white text-primary px-6 py-3 rounded-lg font-semibold"
           >
             Subscribe Now
           </button>
         </form>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-white py-12 lg:py-16 lg:px-10 lg:mr-[5.8%] lg:ml-[1.8%] ml-[10%]">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center lg:justify-between gap-10">
-          <div className="max-w-[300px] lg:relative lg:bottom-3 lg:left-[50px]">
-            <img
-              src={"../src/assets/svg/logo-tickitz.svg"}
-              alt="Tickitz Logo"
-              className="w-[183.8px] h-[71.4px]"
-            />
-            <p className="text-gray-600 mt-4">
-              Stop wasting time. Buy tickets conveniently, watch movies quietly.
-            </p>
-          </div>
-          <div className="lg:relative lg:top-3.5">
-            <h4 className="text-lg font-bold mb-4">Explore</h4>
-            <ul className="text-gray-600 flex flex-row lg:flex lg:flex-col gap-7 lg:gap-0">
-              <li className="mb-2">
-                <a href="#" className="py-4">
-                  Cinemas
-                </a>
-              </li>
-              <li className="mb-2">
-                <a href="#" className="py-4">
-                  Movies List
-                </a>
-              </li>
-              <li className="mb-2">
-                <a href="#" className="py-4">
-                  My Ticket
-                </a>
-              </li>
-              <li className="mb-2">
-                <a href="#" className="py-4">
-                  Notification
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div className="lg:relative lg:top-7">
-            <h4 className="text-lg font-bold mb-4 ">Our Sponsor</h4>
-            <div className="flex lg:flex-col flex-row gap-3">
-              <img
-                className="w-[121px] h-[45px]"
-                src={"../src/assets/svg/ebv.svg"}
-                alt="Ebu Sponsor"
-              />
-              <img
-                className="w-[121px] h-[45px]"
-                src={"../src/assets/svg/cine.svg"}
-                alt="Cine Sponsor"
-              />
-              <img
-                className="w-[121px] h-[45px]"
-                src={"../src/assets/svg/hiflix.svg"}
-                alt="Hif Sponsor"
-              />
-            </div>
-          </div>
-          <div className="lg: relative lg:top-7">
-            <h4 className="text-lg font-bold mb-4">Follow Us</h4>
-            <ul className="text-gray-600 flex flex-row lg:flex-col gap-10 lg:gap-0">
-              <li className="flex mb-4">
-                <img src="../src/assets/svg/fb.svg"></img>
-                <a href="#" className="hidden lg:inline">
-                  Tickitz Cinema id
-                </a>
-              </li>
-              <li className="flex mb-4">
-                <img src="../src/assets/svg/ig.svg"></img>
-                <a href="#" className="hidden lg:inline">
-                  tickitz.id
-                </a>
-              </li>
-              <li className="flex mb-4">
-                <img src="../src/assets/svg/x.svg"></img>
-                <a href="#" className="hidden lg:inline">
-                  tickitz.id
-                </a>
-              </li>
-              <li className="flex mb-4">
-                <img src="../src/assets/svg/youtobe.svg"></img>
-                <a href="#" className="hidden lg:inline">
-                  Tickitz Cinema id
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </footer>
-
-      {/* Copyright */}
-      <footer className="text-center lg:py-6">
-        <p className="text-gray-600">© 2020 Tickitz. All Rights Reserved.</p>
-      </footer>
+      <Footer />
     </>
   );
 }
