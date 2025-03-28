@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import Centang from "../assets/svg/centang-date.svg";
-import Cine from "../assets/svg/Cine.svg";
+import Cine from "../assets/svg/cine.svg";
 
 const SeatOrder = () => {
   // State untuk kursi yang dipilih
