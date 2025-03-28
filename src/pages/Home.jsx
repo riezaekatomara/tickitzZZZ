@@ -113,7 +113,7 @@ const Home = () => {
         <h3 className="text-3xl font-bold mb-10 lg:relative lg:left-[30px]">
           Unleashing the Ultimate Movie Experience
         </h3>
-        <div className="flex flex-col justify-between gap-10 lg:gap-4 relative right-2.5 lg:right-0 lg:ml-[35px] lg:mr-[35px]">
+        <div className="flex flex-col lg:flex-row justify-between gap-10 lg:gap-4 relative right-2.5 lg:right-0 lg:ml-[35px] lg:mr-[35px]">
           <div className="text-center">
             <img
               src={centangS}
