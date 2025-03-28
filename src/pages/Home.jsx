@@ -106,14 +106,14 @@ const Home = () => {
       </section>
 
       {/* Why Choose Us */}
-      <section className="bg-white mr-[8%] ml-[13%] lg:mr-[8%] lg:ml-[5%]">
+      <section className=" bg-white mr-[8%] ml-[13%] lg:mr-[8%] lg:ml-[5%]">
         <h2 className="text-primary text-sm font-semibold tracking-wider mb-2 lg:relative lg:left-[30px]">
           WHY CHOOSE US
         </h2>
         <h3 className="text-3xl font-bold mb-10 lg:relative lg:left-[30px]">
           Unleashing the Ultimate Movie Experience
         </h3>
-        <div className="flex justify-between gap-10 lg:gap-4 relative right-2.5 lg:right-0 lg:ml-[35px] lg:mr-[35px]">
+        <div className="flex flex-col justify-between gap-10 lg:gap-4 relative right-2.5 lg:right-0 lg:ml-[35px] lg:mr-[35px]">
           <div className="text-center">
             <img
               src={centangS}
