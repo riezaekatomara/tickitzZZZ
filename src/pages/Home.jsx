@@ -219,7 +219,7 @@ const Home = () => {
           className="flex items-center text-primary hover:underline"
         >
           <span>View All</span>
-          <img src="../src/assets/svg/arrow.svg" alt="Arrow" className="ml-2" />
+          <img src="/svg/arrow.svg" alt="Arrow" className="ml-2" />
         </Link>
       </div>
 
