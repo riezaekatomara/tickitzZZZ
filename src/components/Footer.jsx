@@ -13,20 +13,20 @@ function Footer() {
     <footer className="bg-white py-8 md:py-12 border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4">
           {/* Logo and Description */}
-          <div className="flex flex-col items-center sm:items-start">
+          <div className="flex flex-col items-start">
             <img src={Logo} alt="Tickitz Logo" className="h-10 mb-4" />
-            <p className="text-sm text-gray-500 text-center sm:text-left max-w-xs">
+            <p className="text-sm text-gray-500 max-w-xs">
               Stop waiting in line. Buy tickets conveniently, watch movies
               quietly.
             </p>
           </div>
 
           {/* Explore Links */}
-          <div className="flex flex-col items-center sm:items-start">
+          <div className="flex flex-col items-start">
             <h3 className="mb-4 font-semibold text-lg">Explore</h3>
-            <ul className="space-y-3 text-gray-500 text-center sm:text-left">
+            <ul className="space-y-3 text-gray-500">
               <li className="hover:text-primary transition-colors duration-200 cursor-pointer">
                 Cinemas
               </li>
@@ -43,9 +43,9 @@ function Footer() {
           </div>
 
           {/* Sponsors */}
-          <div className="flex flex-col items-center sm:items-start">
+          <div className="flex flex-col items-start">
             <h3 className="mb-4 font-semibold text-lg">Our Sponsor</h3>
-            <div className="flex flex-col space-y-6">
+            <div className="flex flex-col space-y-4 sm:space-y-6">
               <div className="transform hover:scale-105 transition-transform duration-200">
                 <img src={Ebv} alt="EBV" className="h-6 w-auto" />
               </div>
@@ -59,39 +59,39 @@ function Footer() {
           </div>
 
           {/* Social Media */}
-          <div className="flex flex-col items-center sm:items-start">
+          <div className="flex flex-col items-start">
             <h3 className="mb-4 font-semibold text-lg">Follow us</h3>
-            <ul className="space-y-4 text-gray-500">
+            <ul className="space-y-3 sm:space-y-4 text-gray-500">
               <li className="flex items-center gap-3 hover:text-primary transition-colors duration-200 cursor-pointer group">
                 <div className="bg-gray-100 p-2 rounded-full group-hover:bg-blue-50">
                   <img src={Fb} alt="Facebook" className="h-5 w-5" />
                 </div>
-                <span>Tickitz Cinema id</span>
+                <span className="text-sm">Tickitz Cinema id</span>
               </li>
               <li className="flex items-center gap-3 hover:text-primary transition-colors duration-200 cursor-pointer group">
                 <div className="bg-gray-100 p-2 rounded-full group-hover:bg-blue-50">
                   <img src={Ig} alt="Instagram" className="h-5 w-5" />
                 </div>
-                <span>tickitz.id</span>
+                <span className="text-sm">tickitz.id</span>
               </li>
               <li className="flex items-center gap-3 hover:text-primary transition-colors duration-200 cursor-pointer group">
                 <div className="bg-gray-100 p-2 rounded-full group-hover:bg-blue-50">
                   <img src={X} alt="X/Twitter" className="h-5 w-5" />
                 </div>
-                <span>tickitz.id</span>
+                <span className="text-sm">tickitz.id</span>
               </li>
               <li className="flex items-center gap-3 hover:text-primary transition-colors duration-200 cursor-pointer group">
                 <div className="bg-gray-100 p-2 rounded-full group-hover:bg-blue-50">
                   <img src={Youtobe} alt="YouTube" className="h-5 w-5" />
                 </div>
-                <span>Tickitz Cinema id</span>
+                <span className="text-sm">Tickitz Cinema id</span>
               </li>
             </ul>
           </div>
         </div>
 
         {/* Copyright Section */}
-        <div className="mt-12 text-center text-sm text-gray-500 border-t border-gray-200 pt-8">
+        <div className="mt-8 sm:mt-12 text-center sm:text-left text-sm text-gray-500 border-t border-gray-200 pt-6 sm:pt-8">
           © 2020 Tickitz. All Rights Reserved.
         </div>
       </div>
