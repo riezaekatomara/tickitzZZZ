@@ -10,66 +10,92 @@ import Youtobe from "../assets/svg/youtobe.svg";
 
 function Footer() {
   return (
-    <div>
-      <footer className="bg-white py-12 pl-21">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-            <div>
-              <img src={Logo}></img>
-              <p className="text-sm text-gray-500">
-                Stop waiting in line. Buy tickets conveniently, watch movies
-                quietly.
-              </p>
-            </div>
+    <footer className="bg-white py-8 md:py-12 border-t border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+          {/* Logo and Description */}
+          <div className="flex flex-col items-center sm:items-start">
+            <img src={Logo} alt="Tickitz Logo" className="h-10 mb-4" />
+            <p className="text-sm text-gray-500 text-center sm:text-left max-w-xs">
+              Stop waiting in line. Buy tickets conveniently, watch movies
+              quietly.
+            </p>
+          </div>
 
-            <div>
-              <h3 className="mb-4 font-semibold">Explore</h3>
-              <ul className="space-y-2 text-gray-500">
-                <li>Cinemas</li>
-                <li>Movies List</li>
-                <li>My Ticket</li>
-                <li>Notification</li>
-              </ul>
-            </div>
+          {/* Explore Links */}
+          <div className="flex flex-col items-center sm:items-start">
+            <h3 className="mb-4 font-semibold text-lg">Explore</h3>
+            <ul className="space-y-3 text-gray-500 text-center sm:text-left">
+              <li className="hover:text-primary transition-colors duration-200 cursor-pointer">
+                Cinemas
+              </li>
+              <li className="hover:text-primary transition-colors duration-200 cursor-pointer">
+                Movies List
+              </li>
+              <li className="hover:text-primary transition-colors duration-200 cursor-pointer">
+                My Ticket
+              </li>
+              <li className="hover:text-primary transition-colors duration-200 cursor-pointer">
+                Notification
+              </li>
+            </ul>
+          </div>
 
-            <div>
-              <h3 className="mb-4 font-semibold">Our Sponsor</h3>
-              <div className="space-y-4">
-                <img src={Ebv}></img>
-                <img src={Cine}></img>
-                <img src={Hiflix}></img>
+          {/* Sponsors */}
+          <div className="flex flex-col items-center sm:items-start">
+            <h3 className="mb-4 font-semibold text-lg">Our Sponsor</h3>
+            <div className="flex flex-col space-y-6">
+              <div className="transform hover:scale-105 transition-transform duration-200">
+                <img src={Ebv} alt="EBV" className="h-6 w-auto" />
+              </div>
+              <div className="transform hover:scale-105 transition-transform duration-200">
+                <img src={Cine} alt="Cine" className="h-6 w-auto" />
+              </div>
+              <div className="transform hover:scale-105 transition-transform duration-200">
+                <img src={Hiflix} alt="Hiflix" className="h-6 w-auto" />
               </div>
             </div>
-
-            <div>
-              <h3 className="mb-4 font-semibold">Follow us</h3>
-              <ul className="space-y-2 text-gray-500">
-                <li className="flex items-center gap-2">
-                  <img src={Fb}></img>
-                  Tickitz Cinema id
-                </li>
-                <li className="flex items-center gap-2">
-                  <img src={Ig}></img>
-                  tickitz.id
-                </li>
-                <li className="flex items-center gap-2">
-                  <img src={X}></img>
-                  tickitz.id
-                </li>
-                <li className="flex items-center gap-2">
-                  <img src={Youtobe}></img>
-                  Tickitz Cinema id
-                </li>
-              </ul>
-            </div>
           </div>
 
-          <div className="mt-12 md:text-center lg:text-center text-sm text-gray-500">
-            © 2020 Tickitz. All Rights Reserved.
+          {/* Social Media */}
+          <div className="flex flex-col items-center sm:items-start">
+            <h3 className="mb-4 font-semibold text-lg">Follow us</h3>
+            <ul className="space-y-4 text-gray-500">
+              <li className="flex items-center gap-3 hover:text-primary transition-colors duration-200 cursor-pointer group">
+                <div className="bg-gray-100 p-2 rounded-full group-hover:bg-blue-50">
+                  <img src={Fb} alt="Facebook" className="h-5 w-5" />
+                </div>
+                <span>Tickitz Cinema id</span>
+              </li>
+              <li className="flex items-center gap-3 hover:text-primary transition-colors duration-200 cursor-pointer group">
+                <div className="bg-gray-100 p-2 rounded-full group-hover:bg-blue-50">
+                  <img src={Ig} alt="Instagram" className="h-5 w-5" />
+                </div>
+                <span>tickitz.id</span>
+              </li>
+              <li className="flex items-center gap-3 hover:text-primary transition-colors duration-200 cursor-pointer group">
+                <div className="bg-gray-100 p-2 rounded-full group-hover:bg-blue-50">
+                  <img src={X} alt="X/Twitter" className="h-5 w-5" />
+                </div>
+                <span>tickitz.id</span>
+              </li>
+              <li className="flex items-center gap-3 hover:text-primary transition-colors duration-200 cursor-pointer group">
+                <div className="bg-gray-100 p-2 rounded-full group-hover:bg-blue-50">
+                  <img src={Youtobe} alt="YouTube" className="h-5 w-5" />
+                </div>
+                <span>Tickitz Cinema id</span>
+              </li>
+            </ul>
           </div>
         </div>
-      </footer>
-    </div>
+
+        {/* Copyright Section */}
+        <div className="mt-12 text-center text-sm text-gray-500 border-t border-gray-200 pt-8">
+          © 2020 Tickitz. All Rights Reserved.
+        </div>
+      </div>
+    </footer>
   );
 }
 
