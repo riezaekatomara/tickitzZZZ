@@ -64,7 +64,7 @@ function Footer() {
             </div>
           </div>
 
-          <div className="mt-12 text-center text-sm text-gray-500">
+          <div className="mt-12 md:text-center lg:text-center text-sm text-gray-500">
             © 2020 Tickitz. All Rights Reserved.
           </div>
         </div>
