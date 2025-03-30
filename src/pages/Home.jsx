@@ -69,7 +69,7 @@ const Home = () => {
       <Header />
 
       {/* Hero Section dengan spacing yang diperbaiki */}
-      <section className="w-full px-4 md:px-8 py-8 md:py-16 flex flex-col md:flex-row md:justify-between items-center max-w-7xl mx-auto">
+      <section className="w-full mt-12 px-4 md:px-8 pt-8 md:pt-16 flex flex-col md:flex-row md:justify-between items-center mx-auto">
         <div className="w-full md:w-1/2 text-center md:text-left mb-8 md:mb-0">
           <h2 className="text-lg md:text-xl text-blue-600 font-semibold mb-3 md:mb-4">
             MOVIE TICKET PURCHASES #1 IN INDONESIA
@@ -115,7 +115,7 @@ const Home = () => {
       </section>
 
       {/* Why Choose Us */}
-      <section className="w-full py-12 px-4 md:px-8 max-w-7xl mx-auto">
+      <section className="w-full pb-12 px-4 md:px-8 mx-auto">
         <div className="text-center md:text-left md:pl-4">
           <h2 className="text-primary text-sm font-semibold tracking-wider mb-2">
             WHY CHOOSE US
@@ -166,7 +166,7 @@ const Home = () => {
       </section>
 
       {/* Movies Section */}
-      <section className="w-full py-12 px-4 md:px-8 max-w-7xl mx-auto">
+      <section className="w-full py-12 px-4 md:px-8 mx-auto">
         <h2 className="text-2xl font-bold text-center md:text-left mb-8">
           Exciting Movies That Should Be Watched Today
         </h2>
@@ -189,7 +189,7 @@ const Home = () => {
                     </button>
                   </Link>
                   <Link to={"/seat-order"}>
-                    <button className="cursor-pointer px-4 py-2 bg-primary text-white rounded w-32 hover:bg-blue-700 transition-colors duration-300">
+                    <button className="cursor-pointer px-4 py-2 bg-primary text-white rounded w-32 transition-colors duration-300">
                       Buy Ticket
                     </button>
                   </Link>
@@ -224,7 +224,7 @@ const Home = () => {
       </div>
 
       {/* Upcoming Movies */}
-      <section className="w-full py-12 px-4 md:px-8 max-w-7xl mx-auto">
+      <section className="w-full py-12 px-4 md:px-8 mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8">
           <div className="text-center sm:text-left mb-4 sm:mb-0">
             <h2 className="text-lg text-primary mb-2">Upcoming Movies</h2>

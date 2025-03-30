@@ -6,8 +6,22 @@
 }
 
 @layer base {
+  body,
   #root {
-    @apply font-mulish;
-    margin: 0;
+    margin: 0 4% !important;
+    padding: 0 !important;
+    overflow-x: hidden;
+  }
+
+  /* Tambahkan padding-top pada konten utama untuk mengkompensasi header fixed */
+  main {
+    padding-top: 64px; /* Sesuaikan dengan tinggi header (h-16 = 64px) */
+  }
+
+  /* Header container yang tetap full width */
+  header {
+    margin-left: -5.26%; /* Kompensasi untuk margin 5% pada root */
+    margin-right: -5.26%; /* Kompensasi untuk margin 5% pada root */
+    width: 111%; /* Menambah lebar untuk mengimbangi margin negatif */
   }
 }

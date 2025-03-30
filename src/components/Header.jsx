@@ -1,7 +1,7 @@
 import logo from "../assets/svg/logo-tickitz.svg";
 import MenuIcon from "../assets/svg/menu-right.svg";
 import { useState } from "react";
-import { Link } from "react-router"; // Perbaikan: gunakan react-router-dom
+import { Link } from "react-router"; // Perbaikan import
 
 function Header() {
   const [isNavVisible, setIsNavVisible] = useState(false);
@@ -11,13 +11,23 @@ function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-md w-full">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header
+      className="sticky top-0 z-50 bg-white shadow-md w-screen left-0 right-0"
+      style={{ margin: 0, width: "100vw", position: "fixed" }}
+    >
+      <div
+        className="w-full px-[11%] sm:px-[19%] md:px-28 lg:px-37 mx-auto"
+        style={{ maxWidth: "100%" }}
+      >
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
             <Link to="/">
-              <img src={logo} className="h-8 md:h-10" alt="Tickitz Logo" />
+              <img
+                src={logo}
+                className="h-8 md:h-10 lg:relative lg:right-5"
+                alt="Tickitz Logo"
+              />
             </Link>
           </div>
 
