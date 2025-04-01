@@ -1,7 +1,9 @@
+// Updated Header.jsx
 import logo from "../assets/svg/logo-tickitz.svg";
 import MenuIcon from "../assets/svg/menu-right.svg";
 import { useState } from "react";
 import { Link } from "react-router"; // Perbaikan import
+import "../styles/button-animations.css"; // Import animasi
 
 function Header() {
   const [isNavVisible, setIsNavVisible] = useState(false);
@@ -25,14 +27,17 @@ function Header() {
             <Link to="/">
               <img
                 src={logo}
-                className="h-8 md:h-10 lg:relative lg:right-5"
+                className="h-8 md:h-10 lg:relative lg:right-5 scale-rotate-on-hover"
                 alt="Tickitz Logo"
               />
             </Link>
           </div>
 
           {/* Hamburger Icon (Mobile) */}
-          <div className="md:hidden cursor-pointer" onClick={toggleNav}>
+          <div
+            className="md:hidden cursor-pointer bounce-on-hover"
+            onClick={toggleNav}
+          >
             <img src={MenuIcon} alt="Menu" className="h-8 w-8" />
           </div>
 
@@ -41,19 +46,19 @@ function Header() {
             <div className="flex space-x-4 md:space-x-6 lg:space-x-8">
               <Link
                 to="/"
-                className="text-gray-700 hover:text-blue-600 font-medium px-2 py-1 transition-colors duration-200"
+                className="text-gray-700 hover:text-blue-600 font-medium px-2 py-1 transition-colors duration-200 border-fill-on-hover"
               >
                 Home
               </Link>
               <Link
                 to="/movie"
-                className="text-gray-700 hover:text-blue-600 font-medium px-2 py-1 transition-colors duration-200"
+                className="text-gray-700 hover:text-blue-600 font-medium px-2 py-1 transition-colors duration-200 border-fill-on-hover"
               >
                 Movie
               </Link>
               <Link
                 to="/seat-order"
-                className="text-gray-700 hover:text-blue-600 font-medium px-2 py-1 transition-colors duration-200"
+                className="text-gray-700 hover:text-blue-600 font-medium px-2 py-1 transition-colors duration-200 border-fill-on-hover"
               >
                 Buy Ticket
               </Link>
@@ -63,12 +68,12 @@ function Header() {
           {/* Auth Buttons - Desktop */}
           <div className="hidden md:flex items-center space-x-2 sm:space-x-4">
             <Link to="/login">
-              <button className="text-primary hover:bg-primary hover:text-white px-3 sm:px-4 py-1 sm:py-2 border border-primary rounded transition-colors duration-200 cursor-pointer text-sm sm:text-base">
+              <button className="text-primary hover:bg-primary hover:text-white px-3 sm:px-4 py-1 sm:py-2 border border-primary rounded transition-colors duration-200 cursor-pointer text-sm sm:text-base shine-on-hover">
                 Sign In
               </button>
             </Link>
             <Link to="/register">
-              <button className="bg-primary text-white hover:bg-white hover:text-primary hover:border-primary border border-transparent px-3 sm:px-4 py-1 sm:py-2 rounded transition-colors duration-200 cursor-pointer text-sm sm:text-base">
+              <button className="bg-primary text-white hover:bg-white hover:text-primary hover:border-primary border border-transparent px-3 sm:px-4 py-1 sm:py-2 rounded transition-colors duration-200 cursor-pointer text-sm sm:text-base pulse-on-hover">
                 Sign Up
               </button>
             </Link>
@@ -83,21 +88,21 @@ function Header() {
         >
           <Link
             to="/"
-            className="text-gray-700 hover:text-blue-600 font-medium px-4 py-2 transition-colors duration-200"
+            className="text-gray-700 hover:text-blue-600 font-medium px-4 py-2 transition-colors duration-200 border-fill-on-hover"
             onClick={toggleNav}
           >
             Home
           </Link>
           <Link
             to="/movie"
-            className="text-gray-700 hover:text-blue-600 font-medium px-4 py-2 transition-colors duration-200"
+            className="text-gray-700 hover:text-blue-600 font-medium px-4 py-2 transition-colors duration-200 border-fill-on-hover"
             onClick={toggleNav}
           >
             Movie
           </Link>
           <Link
             to="/seat-order"
-            className="text-gray-700 hover:text-blue-600 font-medium px-4 py-2 transition-colors duration-200"
+            className="text-gray-700 hover:text-blue-600 font-medium px-4 py-2 transition-colors duration-200 border-fill-on-hover"
             onClick={toggleNav}
           >
             Buy Ticket
@@ -105,12 +110,12 @@ function Header() {
 
           <div className="flex flex-col space-y-3 pt-4 border-t">
             <Link to="/login" onClick={toggleNav}>
-              <button className="w-full text-primary hover:bg-primary hover:text-white px-4 py-2 border border-primary rounded transition-colors duration-200 cursor-pointer">
+              <button className="w-full text-primary hover:bg-primary hover:text-white px-4 py-2 border border-primary rounded transition-colors duration-200 cursor-pointer shine-on-hover">
                 Sign In
               </button>
             </Link>
             <Link to="/register" onClick={toggleNav}>
-              <button className="w-full bg-primary text-white hover:bg-white hover:text-primary hover:border-primary border border-transparent px-4 py-2 rounded transition-colors duration-200 cursor-pointer">
+              <button className="w-full bg-primary text-white hover:bg-white hover:text-primary hover:border-primary border border-transparent px-4 py-2 rounded transition-colors duration-200 cursor-pointer pulse-on-hover">
                 Sign Up
               </button>
             </Link>

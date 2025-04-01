@@ -5,6 +5,7 @@ import centang from "../assets/svg/centang-group.svg";
 import message from "../assets/svg/message-group.svg";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
+import "../styles/button-animations.css";
 
 const Home = () => {
   const API_KEY = "6269e9b68e0c503c6621dfd9e2c6da29";
@@ -183,13 +184,13 @@ const Home = () => {
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <Link to={"/movie-details"}>
-                    <button className="cursor-pointer mb-4 px-4 py-2 bg-transparent text-white border border-white rounded w-32 hover:bg-white hover:text-black transition-colors duration-300">
+                  <Link to={`/movie-details/${movie.id}`}>
+                    <button className="cursor-pointer mb-4 px-4 py-2 bg-transparent text-white border border-white rounded w-32 hover:bg-white hover:text-black transition-colors duration-300 scale-rotate-on-hover">
                       Details
                     </button>
                   </Link>
                   <Link to={"/seat-order"}>
-                    <button className="cursor-pointer px-4 py-2 bg-primary text-white rounded w-32 transition-colors duration-300">
+                    <button className="cursor-pointer px-4 py-2 bg-primary text-white rounded w-32 transition-colors duration-300 gradient-shift-on-hover">
                       Buy Ticket
                     </button>
                   </Link>
@@ -216,7 +217,7 @@ const Home = () => {
       <div className="flex justify-center my-8">
         <Link
           to="/movie"
-          className="flex items-center text-primary hover:underline"
+          className="flex items-center text-primary hover:underline text-slide-on-hover"
         >
           <span>View All</span>
           <img src="/svg/arrow.svg" alt="Arrow" className="ml-2" />
@@ -233,14 +234,14 @@ const Home = () => {
           <div className="flex space-x-4">
             <button
               onClick={scrollLeft}
-              className="p-2 bg-gray-300 rounded-full hover:bg-gray-400 transition"
+              className="cursor-pointer p-2 bg-gray-300 rounded-full hover:bg-gray-400 transition bounce-on-hover"
               aria-label="Scroll left"
             >
               ◀
             </button>
             <button
               onClick={scrollRight}
-              className="p-2 bg-gray-300 rounded-full hover:bg-gray-400 transition"
+              className="cursor-pointer p-2 bg-gray-300 rounded-full hover:bg-gray-400 transition bounce-on-hover"
               aria-label="Scroll right"
             >
               ▶
@@ -265,13 +266,13 @@ const Home = () => {
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <Link to={"/movie-details"}>
-                    <button className="cursor-pointer mb-4 px-4 py-2 bg-transparent text-white border border-white rounded w-32 hover:bg-white hover:text-black transition-colors duration-300">
+                  <Link to={`/movie-details/${movie.id}`}>
+                    <button className="cursor-pointer mb-4 px-4 py-2 bg-transparent text-white border border-white rounded w-32 hover:bg-white hover:text-black transition-colors duration-300 scale-rotate-on-hover">
                       Details
                     </button>
                   </Link>
                   <Link to={"/payment-info"}>
-                    <button className="cursor-pointer px-4 py-2 bg-primary text-white rounded w-32 hover:bg-blue-700 transition-colors duration-300">
+                    <button className="cursor-pointer px-4 py-2 bg-primary text-white rounded w-32 hover:bg-blue-700 transition-colors duration-300 pulse-on-hover">
                       Buy Ticket
                     </button>
                   </Link>
@@ -316,7 +317,7 @@ const Home = () => {
           </div>
           <button
             type="submit"
-            className="cursor-pointer hover:bg-primary hover:text-white bg-white text-primary px-6 py-3 rounded-lg font-semibold w-full sm:w-auto"
+            className="cursor-pointer bg-white text-white hover:bg-primary hover:text-white px-6 py-3 rounded-lg font-semibold gradient-shift-on-hover"
           >
             Subscribe Now
           </button>
