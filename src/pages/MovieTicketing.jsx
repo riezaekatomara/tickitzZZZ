@@ -12,6 +12,7 @@ function MovieTicketing() {
   const [activeGenre, setActiveGenre] = useState("All");
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const MOVIES_PER_PAGE = 12; // 3 rows x 4 cols
   const MAX_TOTAL_MOVIES = 500; // Increased for better filtering
 
@@ -49,6 +50,7 @@ function MovieTicketing() {
   // Fetch all movies on initial load
   useEffect(() => {
     const getMovieList = async () => {
+      setIsLoading(true);
       try {
         let allFetchedMovies = [];
         let page = 1;
@@ -70,6 +72,8 @@ function MovieTicketing() {
         setTotalPages(Math.ceil(allFetchedMovies.length / MOVIES_PER_PAGE));
       } catch (error) {
         console.error("Error fetching movie data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -158,7 +162,12 @@ function MovieTicketing() {
   };
 
   const getPageNumbers = () => {
-    const maxVisiblePages = 5;
+    let maxVisiblePages = 5;
+    // Reduce visible pages on smaller screens
+    if (window.innerWidth < 640) {
+      maxVisiblePages = 3;
+    }
+
     const pageNumbers = [];
     let startPage = Math.max(1, activePage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
@@ -185,46 +194,41 @@ function MovieTicketing() {
 
   return (
     <>
-      <main>
+      <main className="overflow-x-hidden">
         {/* Hero Section */}
-        <div className="relative w-screen left-[calc(-50vw+50%)] h-[300px] sm:h-[462px] overflow-hidden">
+        <div className="relative w-full h-[250px] xs:h-[300px] sm:h-[462px] overflow-hidden">
           <div className="absolute inset-0">
             <img
               src="../public/png/bg-avanger.png"
               alt="Background"
               className="w-full h-full object-cover brightness-50"
-              style={{
-                minWidth: "100vw",
-                marginLeft: "calc(50% - 50vw)",
-                marginRight: "calc(50% - 50vw)",
-              }}
             />
           </div>
-          <div className="relative h-full flex flex-col justify-center text-white text-center sm:text-left ml-0 sm:ml-[10%]">
-            <p className="text-[16px] sm:text-[18px] leading-[30px] sm:leading-[50px]">
+          <div className="relative h-full flex flex-col justify-center text-white text-center px-4 sm:text-left sm:px-8 md:px-12 lg:px-16">
+            <p className="text-[14px] xs:text-[16px] sm:text-[18px] leading-[24px] sm:leading-[30px] md:leading-[50px]">
               List Movie of the Week
             </p>
-            <h1 className="text-[28px] sm:text-[48px] mb-5">
+            <h1 className="text-[22px] xs:text-[28px] sm:text-[36px] md:text-[48px] mb-3 md:mb-5 font-bold">
               Experience the Magic of
-              <br />
+              <br className="hidden xs:block" />
               Cinema: Book Your Ticket
-              <br />
+              <br className="hidden xs:block" />
               Today
             </h1>
           </div>
         </div>
 
         {/* Search and Filter Section */}
-        <section className="flex flex-col sm:flex-row justify-between items-center px-[5%] py-5">
-          <div className="flex flex-col mb-4 sm:mb-0 w-full sm:w-auto">
+        <section className="flex flex-col md:flex-row justify-between items-center px-4 sm:px-6 md:px-8 py-5 space-y-6 md:space-y-0">
+          <div className="flex flex-col w-full md:w-1/2 lg:w-2/5">
             <div className="relative">
-              <p className="absolute bottom-8 left-2 text-[15px] text-gray-500">
+              <p className="absolute bottom-8 left-2 text-[13px] sm:text-[15px] text-gray-500">
                 Search movie
               </p>
-              <div className="relative top-5">
+              <div className="relative top-5 w-full">
                 <img
                   src="../src/assets/svg/search2.svg"
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 z-10"
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 z-10"
                   alt="Search icon"
                 />
                 <input
@@ -237,14 +241,14 @@ function MovieTicketing() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-4 w-full sm:w-auto">
-            <p className="text-gray-700">Filter</p>
-            <div className="flex flex-wrap justify-center gap-2">
+          <div className="flex flex-col gap-2 sm:gap-4 w-full md:w-auto">
+            <p className="text-gray-700 text-center md:text-right">Filter</p>
+            <div className="flex flex-wrap justify-center md:justify-end gap-2">
               {genreButtons.map((genre) => (
                 <button
                   key={genre}
                   onClick={() => handleGenreClick(genre)}
-                  className={`px-4 py-1 rounded-full text-sm sm:text-base transition-all ${
+                  className={`px-3 sm:px-4 py-1 rounded-full text-xs sm:text-sm md:text-base transition-all ${
                     activeGenre === genre
                       ? "bg-blue-700 text-white"
                       : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
@@ -257,15 +261,21 @@ function MovieTicketing() {
           </div>
         </section>
 
-        {/* Movie Grid Section - Always 3x4 */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 sm:px-8 py-10">
-          {displayedMovies.length > 0 ? (
+        {/* Movie Grid Section - With consistent image size */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 px-4 sm:px-6 md:px-8 py-6 sm:py-10">
+          {isLoading ? (
+            <div className="col-span-full text-center py-10">
+              <p className="text-lg">Loading movies...</p>
+              <div className="loader mx-auto mt-4 w-10 h-10 border-4 border-blue-200 border-t-blue-700 rounded-full animate-spin"></div>
+            </div>
+          ) : displayedMovies.length > 0 ? (
             displayedMovies.map((movie) => (
               <div
                 key={movie.id}
-                className="group w-full bg-white shadow-lg rounded-[6px] overflow-hidden text-center"
+                className="group w-full bg-white shadow-lg rounded-[6px] overflow-hidden text-center transition-transform duration-300 hover:scale-[1.02]"
               >
-                <div className="relative">
+                <div className="relative w-full pb-[150%]">
+                  {/* Using padding-bottom trick for consistent aspect ratio */}
                   <img
                     src={
                       movie.poster_path
@@ -273,30 +283,30 @@ function MovieTicketing() {
                         : "https://via.placeholder.com/500x750"
                     }
                     alt={movie.title}
-                    className="w-full h-[315px] object-cover"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <Link to={`/movie-details/${movie.id}`}>
-                      <button className="cursor-pointer mb-4 px-4 py-2 bg-transparent text-white border border-white rounded w-[150px] hover:bg-white hover:text-black transition-colors duration-300">
+                      <button className="cursor-pointer mb-3 sm:mb-4 px-3 py-1 sm:px-4 sm:py-2 bg-transparent text-white border border-white rounded w-[120px] sm:w-[150px] text-sm sm:text-base hover:bg-white hover:text-black transition-colors duration-300">
                         Details
                       </button>
                     </Link>
                     <Link to={`/seat-order/${movie.id}`}>
-                      <button className="cursor-pointer px-4 py-2 bg-blue-700 text-white rounded w-[150px] hover:bg-blue-800 transition-colors duration-300">
+                      <button className="cursor-pointer px-3 py-1 sm:px-4 sm:py-2 bg-blue-700 text-white rounded w-[120px] sm:w-[150px] text-sm sm:text-base hover:bg-blue-800 transition-colors duration-300">
                         Buy Ticket
                       </button>
                     </Link>
                   </div>
                 </div>
-                <div className="p-4">
-                  <h3 className="mb-2 font-semibold line-clamp-1">
+                <div className="p-3 sm:p-4">
+                  <h3 className="mb-2 font-semibold line-clamp-1 text-sm sm:text-base">
                     {movie.title}
                   </h3>
-                  <div className="flex flex-wrap justify-center gap-2">
+                  <div className="flex flex-wrap justify-center gap-1 sm:gap-2">
                     {movie.genre_ids.slice(0, 3).map((id) => (
                       <p
                         key={id}
-                        className="text-gray-500 text-xs px-2 py-1 bg-gray-100 rounded-full"
+                        className="text-gray-500 text-[10px] sm:text-xs px-2 py-1 bg-gray-100 rounded-full"
                       >
                         {genres[id] || "Unknown"}
                       </p>
@@ -307,9 +317,7 @@ function MovieTicketing() {
             ))
           ) : (
             <div className="col-span-full text-center py-10">
-              {allMovies.length === 0
-                ? "Loading movies..."
-                : "No movies found for your search. Try a different keyword or genre."}
+              No movies found for your search. Try a different keyword or genre.
             </div>
           )}
         </section>
@@ -317,7 +325,7 @@ function MovieTicketing() {
         {/* Show search results info if filtering */}
         {(searchQuery || activeGenre !== "All") &&
           filteredMovies.length > 0 && (
-            <div className="text-center text-gray-600 mb-4">
+            <div className="text-center text-gray-600 mb-4 px-4">
               Found {filteredMovies.length} movies
               {searchQuery ? ` matching "${searchQuery}"` : ""}
               {activeGenre !== "All" ? ` in ${activeGenre} genre` : ""}
@@ -326,25 +334,25 @@ function MovieTicketing() {
 
         {/* Pagination Section */}
         {totalPages > 1 && (
-          <div className="flex flex-col items-center gap-4 my-8">
-            <div className="flex gap-2">
+          <div className="flex flex-col items-center gap-2 sm:gap-4 my-6 sm:my-8 px-2">
+            <div className="flex flex-wrap justify-center gap-1 sm:gap-2">
               <button
                 onClick={goToPreviousPage}
                 disabled={activePage === 1}
-                className={`cursor-pointer p-2 px-4 border rounded ${
+                className={`cursor-pointer p-1 sm:p-2 px-2 sm:px-4 border rounded text-xs sm:text-sm ${
                   activePage === 1
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:bg-gray-100"
                 }`}
               >
-                Previous
+                Prev
               </button>
 
               {getPageNumbers().map((page) => (
                 <button
                   key={page}
                   onClick={() => handlePageChange(page)}
-                  className={`cursor-pointer p-2 px-4 border rounded ${
+                  className={`cursor-pointer p-1 sm:p-2 px-2 sm:px-4 border rounded text-xs sm:text-sm ${
                     activePage === page
                       ? "bg-blue-700 text-white"
                       : "hover:bg-gray-100"
@@ -357,7 +365,7 @@ function MovieTicketing() {
               <button
                 onClick={goToNextPage}
                 disabled={activePage === totalPages}
-                className={`cursor-pointer p-2 px-4 border rounded ${
+                className={`cursor-pointer p-1 sm:p-2 px-2 sm:px-4 border rounded text-xs sm:text-sm ${
                   activePage === totalPages
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:bg-gray-100"
@@ -366,7 +374,7 @@ function MovieTicketing() {
                 Next
               </button>
             </div>
-            <div className="text-gray-500">
+            <div className="text-gray-500 text-xs sm:text-sm">
               Page {activePage} of {totalPages}
             </div>
           </div>
@@ -374,24 +382,26 @@ function MovieTicketing() {
       </main>
 
       {/* Newsletter Section */}
-      <section className="bg-blue-700 text-white text-center rounded-lg py-12 px-4 sm:px-8 mx-4 sm:mx-8 my-12">
-        <h3 className="text-2xl font-bold mb-8">Subscribe to our newsletter</h3>
-        <form className="flex flex-col md:flex-row gap-4 justify-center items-center">
+      <section className="bg-blue-700 text-white text-center rounded-lg py-8 sm:py-12 px-4 sm:px-8 mx-4 sm:mx-8 my-8 sm:my-12">
+        <h3 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8">
+          Subscribe to our newsletter
+        </h3>
+        <form className="flex flex-col gap-4 justify-center items-center">
           <div className="flex flex-col sm:flex-row gap-4 w-full max-w-xl">
             <input
               type="text"
               placeholder="First name"
-              className="w-full h-12 px-4 border border-white rounded-lg bg-transparent placeholder-white"
+              className="w-full h-10 sm:h-12 px-4 border border-white rounded-lg bg-transparent placeholder-white text-sm sm:text-base"
             />
             <input
               type="email"
               placeholder="Email address"
-              className="w-full h-12 px-4 border border-white rounded-lg bg-transparent placeholder-white"
+              className="w-full h-10 sm:h-12 px-4 border border-white rounded-lg bg-transparent placeholder-white text-sm sm:text-base"
             />
           </div>
           <button
             type="submit"
-            className="w-full sm:w-auto bg-white text-blue-700 hover:bg-blue-100 px-6 py-3 rounded-lg font-semibold transition-colors"
+            className="w-full sm:w-auto bg-white text-blue-700 hover:bg-blue-100 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-colors text-sm sm:text-base"
           >
             Subscribe Now
           </button>

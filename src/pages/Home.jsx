@@ -95,14 +95,11 @@ const Home = () => {
                 }
                 ${
                   index === 2
-                    ? "relative bottom-20 lg:bottom-8 md:bottom-8 sm:bottom-20 transform md:-translate-y-12"
+                    ? "relative bottom-20 md:bottom-8 transform md:-translate-y-12"
                     : ""
                 }`}
               style={{
                 height: index === 1 || index === 2 ? "250px" : "170px",
-                "@media (min-width: 768px)": {
-                  height: index === 1 || index === 2 ? "250px" : "138px",
-                },
               }}
             >
               <img
@@ -166,7 +163,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Movies Section */}
+      {/* Movies Section - Movie Grid yang diperbaiki */}
       <section className="w-full py-12 px-4 md:px-8 mx-auto">
         <h2 className="text-2xl font-bold text-center md:text-left mb-8">
           Exciting Movies That Should Be Watched Today
@@ -175,13 +172,16 @@ const Home = () => {
           {popularMovies.slice(0, 4).map((movie) => (
             <div
               key={movie.id}
-              className="bg-white shadow-lg rounded-lg overflow-hidden h-full"
+              className="bg-white shadow-lg rounded-lg overflow-hidden flex flex-col h-full"
             >
-              <div className="relative group aspect-[2/3] w-full">
+              <div
+                className="relative w-full"
+                style={{ paddingBottom: "150%" }}
+              >
                 <img
                   src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                   alt={movie.title}
-                  className="w-full h-full object-cover"
+                  className="absolute top-0 left-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <Link to={`/movie-details/${movie.id}`}>
@@ -224,7 +224,7 @@ const Home = () => {
         </Link>
       </div>
 
-      {/* Upcoming Movies */}
+      {/* Upcoming Movies - diperbaiki untuk konsistensi */}
       <section className="w-full py-12 px-4 md:px-8 mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8">
           <div className="text-center sm:text-left mb-4 sm:mb-0">
@@ -259,11 +259,14 @@ const Home = () => {
               key={movie.id}
               className="snap-start flex-shrink-0 w-64 md:w-72 bg-white shadow-lg rounded-lg overflow-hidden group"
             >
-              <div className="relative aspect-[2/3]">
+              <div
+                className="relative w-full"
+                style={{ paddingBottom: "150%" }}
+              >
                 <img
                   src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                   alt={movie.title}
-                  className="w-full h-full object-cover"
+                  className="absolute top-0 left-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <Link to={`/movie-details/${movie.id}`}>
