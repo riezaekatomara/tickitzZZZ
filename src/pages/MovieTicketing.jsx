@@ -195,13 +195,23 @@ function MovieTicketing() {
   return (
     <>
       <main className="overflow-x-hidden">
-        {/* Hero Section */}
+        {/* Hero Section - Fixed background image path and added fallback */}
         <div className="relative w-full h-[250px] xs:h-[300px] sm:h-[462px] overflow-hidden">
           <div className="absolute inset-0">
             <img
-              src="../public/png/bg-avanger.png"
+              src="/png/bg-avanger.png"
               alt="Background"
               className="w-full h-full object-cover brightness-50"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "../public/png/bg-avanger.png";
+                if (e.target.src.includes("../public/png/bg-avanger.png")) {
+                  e.target.onerror = () => {
+                    e.target.src =
+                      "https://via.placeholder.com/1200x462?text=Avengers+Background";
+                  };
+                }
+              }}
             />
           </div>
           <div className="relative h-full flex flex-col justify-center text-white text-center px-4 sm:text-left sm:px-8 md:px-12 lg:px-16">
@@ -218,18 +228,22 @@ function MovieTicketing() {
           </div>
         </div>
 
-        {/* Search and Filter Section */}
-        <section className="flex flex-col md:flex-row justify-between items-center px-4 sm:px-6 md:px-8 py-5 space-y-6 md:space-y-0">
+        {/* Search and Filter Section - Improved responsive layout */}
+        <section className="flex flex-col md:flex-row justify-between items-start md:items-center px-4 sm:px-6 md:px-8 py-5 space-y-6 md:space-y-0">
           <div className="flex flex-col w-full md:w-1/2 lg:w-2/5">
             <div className="relative">
-              <p className="absolute bottom-8 left-2 text-[13px] sm:text-[15px] text-gray-500">
+              <p className="text-[13px] sm:text-[15px] text-gray-500 mb-2">
                 Search movie
               </p>
-              <div className="relative top-5 w-full">
+              <div className="relative w-full">
                 <img
                   src="../src/assets/svg/search2.svg"
                   className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 z-10"
                   alt="Search icon"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.style.display = "none";
+                  }}
                 />
                 <input
                   type="text"
@@ -242,13 +256,13 @@ function MovieTicketing() {
             </div>
           </div>
           <div className="flex flex-col gap-2 sm:gap-4 w-full md:w-auto">
-            <p className="text-gray-700 text-center md:text-right">Filter</p>
-            <div className="flex flex-wrap justify-center md:justify-end gap-2">
+            <p className="text-gray-700 text-left md:text-right">Filter</p>
+            <div className="flex flex-wrap justify-start md:justify-end gap-2">
               {genreButtons.map((genre) => (
                 <button
                   key={genre}
                   onClick={() => handleGenreClick(genre)}
-                  className={`px-3 sm:px-4 py-1 rounded-full text-xs sm:text-sm md:text-base transition-all ${
+                  className={`cursor-pointer px-3 sm:px-4 py-1 rounded-full text-xs sm:text-sm md:text-base transition-all ${
                     activeGenre === genre
                       ? "bg-blue-700 text-white"
                       : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
@@ -284,6 +298,7 @@ function MovieTicketing() {
                     }
                     alt={movie.title}
                     className="absolute inset-0 w-full h-full object-cover"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <Link to={`/movie-details/${movie.id}`}>
@@ -382,26 +397,24 @@ function MovieTicketing() {
       </main>
 
       {/* Newsletter Section */}
-      <section className="bg-blue-700 text-white text-center rounded-lg py-8 sm:py-12 px-4 sm:px-8 mx-4 sm:mx-8 my-8 sm:my-12">
-        <h3 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8">
-          Subscribe to our newsletter
-        </h3>
-        <form className="flex flex-col gap-4 justify-center items-center">
+      <section className="bg-primary text-white text-center rounded-lg py-12 px-4 sm:px-8 mx-4 sm:mx-8 my-12">
+        <h3 className="text-2xl font-bold mb-8">Subscribe to our newsletter</h3>
+        <form className="flex flex-col md:flex-row gap-4 justify-center items-center">
           <div className="flex flex-col sm:flex-row gap-4 w-full max-w-xl">
             <input
               type="text"
               placeholder="First name"
-              className="w-full h-10 sm:h-12 px-4 border border-white rounded-lg bg-transparent placeholder-white text-sm sm:text-base"
+              className="placeholder-white w-full h-12 px-4 border rounded-lg bg-transparent bg-opacity-50"
             />
             <input
               type="email"
               placeholder="Email address"
-              className="w-full h-10 sm:h-12 px-4 border border-white rounded-lg bg-transparent placeholder-white text-sm sm:text-base"
+              className="placeholder-white w-full h-12 px-4 border rounded-lg bg-transparent bg-opacity-50"
             />
           </div>
           <button
             type="submit"
-            className="w-full sm:w-auto bg-white text-blue-700 hover:bg-blue-100 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-colors text-sm sm:text-base"
+            className="cursor-pointer bg-white text-white hover:bg-primary hover:text-white px-6 py-3 rounded-lg font-semibold gradient-shift-on-hover"
           >
             Subscribe Now
           </button>

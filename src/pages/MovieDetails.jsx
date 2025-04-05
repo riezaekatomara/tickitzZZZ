@@ -21,8 +21,6 @@ const MovieDetails = () => {
   const [bookingCity, setBookingCity] = useState("choose");
   const [selectedCinema, setSelectedCinema] = useState("");
   const [activePage, setActivePage] = useState(1);
-  const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
-  const [bookingStatus, setBookingStatus] = useState("");
   const [hasSelectedTime, setHasSelectedTime] = useState(false);
   const [hasSelectedCity, setHasSelectedCity] = useState(false);
   const [hasSelectedDate, setHasSelectedDate] = useState(false);
@@ -146,20 +144,14 @@ const MovieDetails = () => {
 
   // Filter cinemas based on city
   const filterCinemasByCity = (city) => {
-    // This is a simplified filtering logic - in real implementation,
-    // you would fetch cinema data based on city, date, and time
-
-    // For demonstration purposes, we're using a pseudorandom filter based on city name
     const cityHash = city
       .split("")
       .reduce((acc, char) => acc + char.charCodeAt(0), 0);
 
-    // Select a subset of cinemas based on the city hash
     const filteredCinemas = allCinemas.filter((_, index) => {
       return (index + cityHash) % 3 === 0;
     });
 
-    // Ensure we always return at least 2 cinemas
     if (filteredCinemas.length < 2) {
       return allCinemas.slice(0, 2);
     }
@@ -167,39 +159,42 @@ const MovieDetails = () => {
     return filteredCinemas;
   };
 
+  // Check if cinema is available based on current filters
+  const isCinemaAvailable = (cinemaId) => {
+    if (!hasSelectedDate || !hasSelectedTime || !hasSelectedCity) return true;
+
+    const availableCinemas = filterCinemasByCity(bookingCity);
+    return availableCinemas.some((cinema) => cinema.id === cinemaId);
+  };
+
   // Handle filter button click
   const handleFilter = () => {
-    // Validasi input
     if (bookingDate === "choose") {
       setFilterMessage("Silakan pilih tanggal tayangan terlebih dahulu!");
       setShowFilterMessage(true);
-      setTimeout(() => setShowFilterMessage(false), 3000);
       return;
     }
 
     if (!bookingTime || bookingTime === "choose") {
       setFilterMessage("Silakan pilih waktu tayangan terlebih dahulu!");
       setShowFilterMessage(true);
-      setTimeout(() => setShowFilterMessage(false), 3000);
       return;
     }
 
     if (!bookingCity || bookingCity === "choose") {
       setFilterMessage("Silakan pilih lokasi bioskop terlebih dahulu!");
       setShowFilterMessage(true);
-      setTimeout(() => setShowFilterMessage(false), 3000);
       return;
     }
 
-    // Reset cinema selection when filter changes
-    setSelectedCinema("");
+    // Clear validation message when filter button is clicked
+    setShowFilterMessage(false);
 
-    // Apply the filter
+    setSelectedCinema("");
     const filtered = filterCinemasByCity(bookingCity);
     setFilteredCinemas(filtered);
     setIsFiltered(true);
 
-    // Show success message
     setFilterMessage(
       `Menampilkan ${
         filtered.length
@@ -208,14 +203,35 @@ const MovieDetails = () => {
       )} jam ${bookingTime}`
     );
     setShowFilterMessage(true);
-    setTimeout(() => setShowFilterMessage(false), 3000);
-
-    // Reset to first page
+    // Keep the filter success message for 3 seconds
+    setTimeout(() => setShowFilterMessage(false), 5250);
     setActivePage(1);
   };
 
   // Handle cinema selection
   const handleCinemaSelect = (cinemaId) => {
+    const selectedCinemaObject = allCinemas.find(
+      (cinema) => cinema.id === cinemaId
+    );
+
+    // Check if all filters are selected
+    if (hasSelectedDate && hasSelectedTime && hasSelectedCity) {
+      // Check if the cinema is available with the current filters
+      if (!isCinemaAvailable(cinemaId)) {
+        setFilterMessage(
+          `Bioskop ${selectedCinemaObject.name} tidak tersedia pada waktu dan lokasi yang dipilih. Gunakan filter untuk melihat daftar bioskop yang tersedia.`
+        );
+        setShowFilterMessage(true);
+        // Don't set timeout to auto-hide the message
+        return;
+      }
+    }
+
+    // If selecting a different cinema, clear the validation message
+    if (selectedCinema !== cinemaId) {
+      setShowFilterMessage(false);
+    }
+
     setSelectedCinema(cinemaId);
   };
 
@@ -223,31 +239,48 @@ const MovieDetails = () => {
   const handlePageChange = (page) => {
     setActivePage(page);
     setSelectedCinema("");
+    // Clear validation message when changing pages
+    setShowFilterMessage(false);
   };
 
   // Handle date selection
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
+    // Clear validation message when any filter is changed
+    setShowFilterMessage(false);
+
     if (selectedDate !== "choose") {
       setBookingDate(selectedDate);
       setHasSelectedDate(true);
-      // Reset filter state when selection changes
       setIsFiltered(false);
       setFilteredCinemas(null);
+
+      // Clear cinema selection if it's not available with new date
+      if (selectedCinema && !isCinemaAvailable(selectedCinema)) {
+        setSelectedCinema("");
+      }
     } else {
       setBookingDate(selectedDate);
+      setHasSelectedDate(false);
     }
   };
 
   // Handle time selection
   const handleTimeChange = (e) => {
     const selectedTime = e.target.value;
+    // Clear validation message when any filter is changed
+    setShowFilterMessage(false);
+
     if (selectedTime !== "choose") {
       setBookingTime(selectedTime);
       setHasSelectedTime(true);
-      // Reset filter state when selection changes
       setIsFiltered(false);
       setFilteredCinemas(null);
+
+      // Clear cinema selection if it's not available with new time
+      if (selectedCinema && !isCinemaAvailable(selectedCinema)) {
+        setSelectedCinema("");
+      }
     } else {
       setBookingTime(selectedTime);
       setHasSelectedTime(false);
@@ -257,41 +290,62 @@ const MovieDetails = () => {
   // Handle city selection
   const handleCityChange = (e) => {
     const selectedCity = e.target.value;
+    // Clear validation message when any filter is changed
+    setShowFilterMessage(false);
+
     if (selectedCity !== "choose") {
       setBookingCity(selectedCity);
       setHasSelectedCity(true);
-      // Reset filter state when selection changes
       setIsFiltered(false);
       setFilteredCinemas(null);
+
+      // Clear cinema selection if it's not available in new city
+      if (selectedCinema && !isCinemaAvailable(selectedCinema)) {
+        setSelectedCinema("");
+      }
     } else {
       setBookingCity(selectedCity);
       setHasSelectedCity(false);
     }
   };
 
-  // Handle booking confirmation
+  // Handle booking - navigating to seat order page
   const handleBookNow = () => {
     if (bookingDate === "choose") {
-      setBookingStatus("Silakan pilih tanggal terlebih dahulu!");
-      setShowBookingConfirmation(true);
+      setFilterMessage("Silakan pilih tanggal terlebih dahulu!");
+      setShowFilterMessage(true);
       return;
     }
 
     if (!selectedCinema) {
-      setBookingStatus("Silakan pilih bioskop terlebih dahulu!");
-      setShowBookingConfirmation(true);
+      setFilterMessage("Silakan pilih bioskop terlebih dahulu!");
+      setShowFilterMessage(true);
       return;
     }
 
     if (!bookingTime || bookingTime === "choose") {
-      setBookingStatus("Silakan pilih waktu tayangan terlebih dahulu!");
-      setShowBookingConfirmation(true);
+      setFilterMessage("Silakan pilih waktu tayangan terlebih dahulu!");
+      setShowFilterMessage(true);
       return;
     }
 
     if (!bookingCity || bookingCity === "choose") {
-      setBookingStatus("Silakan pilih lokasi bioskop terlebih dahulu!");
-      setShowBookingConfirmation(true);
+      setFilterMessage("Silakan pilih lokasi bioskop terlebih dahulu!");
+      setShowFilterMessage(true);
+      return;
+    }
+
+    // Check if the cinema is available with the current filters
+    if (!isCinemaAvailable(selectedCinema)) {
+      const selectedCinemaDetails = allCinemas.find(
+        (cinema) => cinema.id === selectedCinema
+      );
+
+      setFilterMessage(
+        `Bioskop ${selectedCinemaDetails.name} tidak tersedia pada waktu dan lokasi yang dipilih. Gunakan filter untuk melihat daftar bioskop yang tersedia.`
+      );
+      setShowFilterMessage(true);
+      // Don't set timeout to auto-hide the message
       return;
     }
 
@@ -299,20 +353,28 @@ const MovieDetails = () => {
       (cinema) => cinema.id === selectedCinema
     );
 
-    setBookingStatus(
-      `Pemesanan tiket berhasil! Film: ${movie.title}, Bioskop: ${
-        selectedCinemaDetails.name
-      }, Tanggal: ${formatDate(
-        bookingDate
-      )}, Jam: ${bookingTime}, Kota: ${bookingCity}`
-    );
-    setShowBookingConfirmation(true);
+    // Prepare booking data to pass to seat order page
+    const bookingData = {
+      movieId: movie.id,
+      movieTitle: movie.title,
+      moviePoster: movie.poster_path,
+      movieGenres: movie.genres.map((genre) => genre.name),
+      bookingDate: bookingDate,
+      formattedDate: formatDate(bookingDate),
+      bookingTime: bookingTime,
+      bookingCity: bookingCity,
+      cinemaId: selectedCinema,
+      cinemaName: selectedCinemaDetails.name,
+      cinemaImage: selectedCinemaDetails.image,
+    };
+
+    // Navigate to seat order page with booking data
+    navigate("/seat-order", { state: bookingData });
   };
 
   // Get cinema items to display based on filter status and pagination
   const getCinemasToDisplay = () => {
     if (isFiltered && filteredCinemas) {
-      // Calculate pagination for filtered cinemas
       const startIndex = (activePage - 1) * 4;
       const endIndex = startIndex + 4;
       return filteredCinemas.slice(startIndex, endIndex);
@@ -360,85 +422,101 @@ const MovieDetails = () => {
   return (
     <div className="bg-white-100 min-h-screen">
       <Header />
+
+      {/* Hero Image - Responsive Height */}
       <div
-        className="w-full h-[415px] bg-cover bg-center"
+        className="w-full h-[200px] xs:h-[250px] sm:h-[300px] md:h-[350px] lg:h-[415px] bg-cover bg-center"
         style={{
           backgroundImage: `url(https://image.tmdb.org/t/p/original/${movie.backdrop_path})`,
-          backgroundPosition: "center",
+          backgroundPosition: "center 25%",
           backgroundSize: "cover",
         }}
       ></div>
 
-      {/* Movie Details */}
-      <div className="mx-4 md:mx-[70px] p-6 bg-white mt-6 rounded-md">
-        <div className="relative flex flex-col md:flex-row md:items-start mb-0">
-          <img
-            src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-            alt={movie.title}
-            className="relative bottom-40 w-[264px] h-[347px] md:w-1/4 rounded-md shadow-lg mb-4 md:mb-0"
-          />
+      {/* Movie Details - Responsive Container */}
+      <div className="mx-3 xs:mx-4 md:mx-8 lg:mx-[70px] p-3 xs:p-4 md:p-6 bg-white mt-4 xs:mt-6 rounded-md shadow-sm">
+        {/* Movie Info Section - Responsive Flex */}
+        <div className="relative flex flex-col md:flex-row md:items-start mb-0 gap-4 md:gap-6">
+          {/* Movie Poster - Responsive Sizing and Positioning */}
+          <div className="relative -mt-16 xs:-mt-20 md:-mt-32 lg:-mt-40 w-full max-w-[180px] xs:max-w-[220px] md:max-w-[264px] mx-auto md:mx-0 z-10">
+            <img
+              src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+              alt={movie.title}
+              className="w-full h-auto rounded-md shadow-lg"
+            />
+          </div>
 
-          <div className="relative bottom-8 md:ml-6 flex-1">
-            <h2 className="text-[32px] w-[418px] h-[34px] font-bold pb-13">
+          {/* Movie Details - Responsive Layout */}
+          <div className="flex-1 mt-2 xs:mt-4 md:mt-0">
+            <h2 className="text-xl xs:text-2xl md:text-3xl font-bold text-center md:text-left">
               {movie.title}
             </h2>
-            <div className="flex flex-wrap gap-2 mt-2">
+
+            {/* Genres - Responsive Wrap */}
+            <div className="flex flex-wrap justify-center md:justify-start gap-2 mt-2">
               {movie.genres.map((genre) => (
                 <span
                   key={genre.id}
-                  className="w-[110px] h-[31px] bg-gray-100 text-gray-800 px-3 py-1 rounded-[20px]"
+                  className="text-xs xs:text-sm px-2 xs:px-3 py-1 bg-gray-100 text-gray-800 rounded-full"
                 >
                   {genre.name}
                 </span>
               ))}
             </div>
 
-            {/* Grid 2x2 untuk Movie Details Info dengan posisi Duration dan Directed by ditukar */}
-            <div className="mt-4 grid grid-cols-2 gap-4">
+            {/* Movie Info Grid - Responsive Layout */}
+            <div className="mt-4 grid grid-cols-1 xs:grid-cols-2 gap-3 xs:gap-4 text-center xs:text-left">
               <div className="space-y-1">
-                <p className="text-gray-500 text-sm">Release Date</p>
-                <p className="text-gray-900 font-medium">
+                <p className="text-gray-500 text-xs xs:text-sm">Release Date</p>
+                <p className="text-gray-900 text-sm xs:text-base font-medium">
                   {formatDate(movie.release_date)}
                 </p>
               </div>
               <div className="space-y-1">
-                <p className="text-gray-500 text-sm">Directed by</p>
-                <p className="text-gray-900 font-medium">{director}</p>
+                <p className="text-gray-500 text-xs xs:text-sm">Directed by</p>
+                <p className="text-gray-900 text-sm xs:text-base font-medium">
+                  {director}
+                </p>
               </div>
               <div className="space-y-1">
-                <p className="text-gray-500 text-sm">Duration</p>
-                <p className="text-gray-900 font-medium">
+                <p className="text-gray-500 text-xs xs:text-sm">Duration</p>
+                <p className="text-gray-900 text-sm xs:text-base font-medium">
                   {formatRuntime(movie.runtime)}
                 </p>
               </div>
               <div className="space-y-1">
-                <p className="text-gray-500 text-sm">Cast</p>
-                <p className="text-gray-900 font-medium">{cast.join(", ")}</p>
+                <p className="text-gray-500 text-xs xs:text-sm">Cast</p>
+                <p className="text-gray-900 text-sm xs:text-base font-medium">
+                  {cast.join(", ")}
+                </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Synopsis section - Moved outside the flex container and made wider */}
-        <div className="relative bottom-35 mt-4 md:mt-0 md:ml-0 w-full">
-          <h3 className="text-xl font-semibold mt-0 md:mt-2">Synopsis</h3>
-          <p className="text-gray-700 mt-2 pr-4">{movie.overview}</p>
+        {/* Synopsis Section */}
+        <div className="mt-5 xs:mt-6 md:mt-8">
+          <h3 className="text-lg xs:text-xl font-semibold">Synopsis</h3>
+          <p className="text-sm xs:text-base text-gray-700 mt-2">
+            {movie.overview}
+          </p>
         </div>
 
-        {/* Booking Section */}
-        <div>
-          <h3 className="text-xl font-semibold mt-6">Book Tickets</h3>
-          <div className="flex flex-wrap justify-between gap-4 mt-2">
+        {/* Booking Section - Responsive Controls */}
+        <div className="mt-6 xs:mt-8">
+          <h3 className="text-lg xs:text-xl font-semibold">Book Tickets</h3>
+
+          {/* Filter Controls - Responsive Stack/Row */}
+          <div className="flex flex-col xs:flex-row flex-wrap gap-2 xs:gap-3 mt-3 xs:mt-4">
             <select
               value={bookingDate}
               onChange={handleDateChange}
-              className="cursor-pointer border px-4 py-2 rounded w-full sm:w-1/4"
+              className="flex-1 min-w-[120px] xs:min-w-[150px] text-sm xs:text-base cursor-pointer border px-3 xs:px-4 py-2 rounded"
             >
               <option value="choose" disabled={hasSelectedDate}>
                 Choose Date
               </option>
               <option value={today}>{formatDate(today)}</option>
-              {/* Add next 7 days */}
               {[...Array(7)].map((_, i) => {
                 const nextDate = new Date();
                 nextDate.setDate(nextDate.getDate() + i + 1);
@@ -450,10 +528,11 @@ const MovieDetails = () => {
                 );
               })}
             </select>
+
             <select
               value={bookingTime}
               onChange={handleTimeChange}
-              className="cursor-pointer border px-4 py-2 rounded w-full sm:w-1/4"
+              className="flex-1 min-w-[120px] xs:min-w-[150px] text-sm xs:text-base cursor-pointer border px-3 xs:px-4 py-2 rounded"
             >
               <option value="choose" disabled={hasSelectedTime}>
                 Choose Time
@@ -464,10 +543,11 @@ const MovieDetails = () => {
               <option value="07:00 PM">07:00 PM</option>
               <option value="09:45 PM">09:45 PM</option>
             </select>
+
             <select
               value={bookingCity}
               onChange={handleCityChange}
-              className="cursor-pointer border px-4 py-2 rounded w-full sm:w-1/4"
+              className="flex-1 min-w-[120px] xs:min-w-[150px] text-sm xs:text-base cursor-pointer border px-3 xs:px-4 py-2 rounded"
             >
               <option value="choose" disabled={hasSelectedCity}>
                 Choose Location
@@ -478,15 +558,16 @@ const MovieDetails = () => {
               <option value="Surabaya">Surabaya</option>
               <option value="Bali">Bali</option>
             </select>
+
             <button
               onClick={handleFilter}
-              className={`cursor-pointer ${
+              className={`flex-1 xs:flex-none cursor-pointer ${
                 bookingDate !== "choose" &&
                 bookingTime !== "choose" &&
                 bookingCity !== "choose"
                   ? "bg-blue-600 hover:bg-blue-700"
                   : "bg-blue-400"
-              } text-white px-4 py-2 rounded w-full sm:w-auto transition-colors`}
+              } text-white px-3 xs:px-4 py-2 rounded transition-colors text-sm xs:text-base`}
               disabled={
                 bookingDate === "choose" ||
                 bookingTime === "choose" ||
@@ -497,17 +578,17 @@ const MovieDetails = () => {
             </button>
           </div>
 
-          {/* Filter message notification */}
+          {/* Filter Messages - Responsive */}
           {showFilterMessage && (
-            <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-blue-800">
+            <div className="mt-2 xs:mt-3 p-2 bg-blue-50 border border-blue-200 rounded text-blue-800 text-xs xs:text-sm">
               {filterMessage}
             </div>
           )}
 
-          {/* Active filter indicator */}
+          {/* Active Filter Indicator */}
           {isFiltered && (
-            <div className="mt-2 flex items-center">
-              <span className="text-sm text-gray-700">
+            <div className="mt-2 xs:mt-3 flex flex-col xs:flex-row items-start xs:items-center gap-1 xs:gap-2">
+              <span className="text-xs xs:text-sm text-gray-700">
                 <span className="font-semibold">Filter aktif:</span>{" "}
                 {bookingCity}, {formatDate(bookingDate)}, {bookingTime}
               </span>
@@ -516,8 +597,10 @@ const MovieDetails = () => {
                   setIsFiltered(false);
                   setFilteredCinemas(null);
                   setActivePage(1);
+                  // Clear validation message when resetting filter
+                  setShowFilterMessage(false);
                 }}
-                className="ml-2 text-sm text-blue-600 hover:text-blue-800"
+                className="text-xs xs:text-sm text-blue-600 hover:text-blue-800"
               >
                 Reset Filter
               </button>
@@ -525,24 +608,23 @@ const MovieDetails = () => {
           )}
         </div>
 
-        {/* Cinema Selection */}
-        <div className="mt-6">
-          <h3 className="text-xl font-semibold">Choose Cinema</h3>
+        {/* Cinema Selection - Responsive Grid */}
+        <div className="mt-6 xs:mt-8">
+          <h3 className="text-lg xs:text-xl font-semibold">Choose Cinema</h3>
 
-          {/* No cinemas message */}
           {isFiltered && filteredCinemas && filteredCinemas.length === 0 ? (
-            <div className="mt-4 p-4 bg-gray-50 rounded text-center">
+            <div className="mt-3 xs:mt-4 p-3 xs:p-4 bg-gray-50 rounded text-center text-sm xs:text-base">
               Tidak ada bioskop yang tersedia dengan filter yang dipilih.
               Silahkan ubah filter Anda.
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 xs:gap-4 mt-3 xs:mt-4">
                 {getCinemasToDisplay().map((cinema) => (
                   <button
                     key={cinema.id}
                     onClick={() => handleCinemaSelect(cinema.id)}
-                    className={`relative w-[200px] h-[100px] rounded-[8px] cursor-pointer border px-6 py-3 bg-white hover:bg-opacity-20 hover:bg-blue-100 transition-colors flex items-center justify-center ${
+                    className={`relative w-full h-[80px] xs:h-[90px] sm:h-[100px] rounded-lg cursor-pointer border px-3 xs:px-4 py-2 xs:py-3 bg-white hover:bg-blue-50 transition-colors flex items-center justify-center ${
                       selectedCinema === cinema.id
                         ? "border-blue-600 border-2 bg-blue-50"
                         : ""
@@ -551,12 +633,12 @@ const MovieDetails = () => {
                     <img
                       src={cinema.image}
                       alt={cinema.name}
-                      className="z-10 relative max-h-12 object-contain"
+                      className="max-h-10 xs:max-h-12 object-contain"
                     />
                     {selectedCinema === cinema.id && (
-                      <div className="absolute top-2 right-2">
+                      <div className="absolute top-1 xs:top-2 right-1 xs:right-2">
                         <svg
-                          className="w-5 h-5 text-blue-600"
+                          className="w-4 h-4 xs:w-5 xs:h-5 text-blue-600"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -572,14 +654,14 @@ const MovieDetails = () => {
                 ))}
               </div>
 
-              {/* Pagination */}
+              {/* Pagination - Responsive */}
               {getTotalPages() > 1 && (
-                <div className="flex justify-center space-x-2 mt-4">
+                <div className="flex flex-wrap justify-center gap-1 xs:gap-2 mt-4 xs:mt-6">
                   {[...Array(getTotalPages())].map((_, i) => (
                     <button
                       key={i + 1}
                       onClick={() => handlePageChange(i + 1)}
-                      className={`border px-4 py-2 rounded ${
+                      className={`cursor-pointer w-8 h-8 xs:w-10 xs:h-10 border rounded flex items-center justify-center text-sm xs:text-base ${
                         activePage === i + 1
                           ? "bg-blue-600 text-white"
                           : "hover:bg-blue-100"
@@ -593,18 +675,18 @@ const MovieDetails = () => {
             </>
           )}
 
-          {/* Book Now Button */}
-          <div className="flex justify-center">
+          {/* Book Now Button - Responsive */}
+          <div className="flex justify-center mt-4 xs:mt-6">
             <button
               onClick={handleBookNow}
-              className={`cursor-pointer ${
+              className={`cursor-pointer w-full xs:w-auto px-4 xs:px-6 py-2 xs:py-3 rounded text-sm xs:text-base ${
                 selectedCinema &&
                 bookingDate !== "choose" &&
                 bookingTime !== "choose" &&
                 bookingCity !== "choose"
                   ? "bg-blue-600 hover:bg-blue-700"
                   : "bg-blue-400"
-              } text-white px-6 py-2 rounded mt-4 transition-colors`}
+              } text-white transition-colors`}
               disabled={
                 !selectedCinema ||
                 bookingDate === "choose" ||
@@ -615,28 +697,6 @@ const MovieDetails = () => {
               Book Now
             </button>
           </div>
-
-          {/* Booking Confirmation */}
-          {showBookingConfirmation && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white p-6 rounded-lg max-w-md w-full">
-                <h3 className="text-xl font-bold mb-4">
-                  {bookingStatus.includes("berhasil")
-                    ? "Booking Berhasil!"
-                    : "Perhatian"}
-                </h3>
-                <p className="mb-4">{bookingStatus}</p>
-                <div className="flex justify-end">
-                  <button
-                    onClick={() => setShowBookingConfirmation(false)}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                  >
-                    {bookingStatus.includes("berhasil") ? "OK" : "Tutup"}
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 

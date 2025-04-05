@@ -23,7 +23,7 @@ function App() {
         <Route path="/movie" element={<Movie />} />
         <Route path="/movie-details/:id" element={<MovieDetails />} />{" "}
         {/* Update: tambahkan parameter :id */}
-        <Route path="/seat-order/:id" element={<SeatOrder />} />{" "}
+        <Route path="/seat-order" element={<SeatOrder />} />{" "}
         {/* Update: tambahkan parameter :id */}
         <Route path="/payment-info" element={<PaymentInfo />} />
         <Route path="/ticket-result" element={<TicketResult />} />
