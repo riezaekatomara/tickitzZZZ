@@ -323,12 +323,14 @@ const SeatOrder = () => {
                       <span className="text-xs sm:text-sm text-gray-600">
                         {bookingData.cinemaName} - {bookingData.bookingTime}
                       </span>
-                      <button
-                        onClick={handleChangeMovie}
-                        className="mt-2 sm:mt-0 cursor-pointer rounded bg-primary px-3 sm:px-4 py-1 text-xs sm:text-sm text-white sm:ml-4"
-                      >
-                        Change Movie
-                      </button>
+                      <Link to="/movie">
+                        <button
+                          onClick={handleChangeMovie}
+                          className="mt-2 sm:mt-0 cursor-pointer rounded bg-primary px-3 sm:px-4 py-1 text-xs sm:text-sm text-white sm:ml-4"
+                        >
+                          Change Movie
+                        </button>
+                      </Link>
                     </div>
                   </div>
                 </div>

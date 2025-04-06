@@ -56,7 +56,7 @@ function Header() {
                 Movie
               </Link>
               <Link
-                to="#"
+                to="/movie"
                 className="text-gray-700 hover:text-blue-600 font-medium px-2 py-1 transition-colors duration-200 border-fill-on-hover"
               >
                 Buy Ticket
@@ -100,7 +100,7 @@ function Header() {
             Movie
           </Link>
           <Link
-            to="/seat-order"
+            to="/movie"
             className="text-gray-700 hover:text-blue-600 font-medium px-4 py-2 transition-colors duration-200 border-fill-on-hover"
             onClick={toggleNav}
           >
