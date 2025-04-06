@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Footer from "../components/Footer.jsx";
 import "../styles/button-animations.css";
 
 function MovieTicketing() {
+  const navigate = useNavigate();
   const [allMovies, setAllMovies] = useState([]);
   const [displayedMovies, setDisplayedMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
@@ -13,13 +14,32 @@ function MovieTicketing() {
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const MOVIES_PER_PAGE = 12; // 3 rows x 4 cols
+  const MOVIES_PER_PAGE = 12;
   const MAX_TOTAL_MOVIES = 500; // Increased for better filtering
 
   const API_KEY = "6269e9b68e0c503c6621dfd9e2c6da29";
   const BASE_URL = "https://api.themoviedb.org/3";
   const POPULAR_MOVIES_URL = `${BASE_URL}/movie/popular?language=en-US&page=${activePage}&api_key=${API_KEY}`;
   const GENRE_LIST_URL = `${BASE_URL}/genre/movie/list?language=en-US&api_key=${API_KEY}`;
+
+  // Function to handle "Buy Ticket" button click
+  const handleBuyTicket = (movie) => {
+    const movieGenres = movie.genre_ids.map((id) => genres[id] || "Unknown");
+
+    // Navigate to seat order page with movie data
+    navigate(`/movie-details/${movie.id}`, {
+      state: {
+        movieId: movie.id,
+        movieTitle: movie.title,
+        moviePoster: movie.poster_path,
+        movieGenres: movieGenres,
+        movieOverview: movie.overview,
+        movieReleaseDate: movie.release_date,
+        movieRuntime: movie.runtime,
+        movieBackdrop: movie.backdrop_path,
+      },
+    });
+  };
 
   // Fetch genre list
   useEffect(() => {
@@ -301,16 +321,32 @@ function MovieTicketing() {
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <Link to={`/movie-details/${movie.id}`}>
+                    <Link
+                      to={`/movie-details/${movie.id}`}
+                      state={{
+                        movieId: movie.id,
+                        movieTitle: movie.title,
+                        moviePoster: movie.poster_path,
+                        movieGenres: movie.genre_ids.map(
+                          (id) => genres[id] || "Unknown"
+                        ),
+                        movieOverview: movie.overview,
+                        movieReleaseDate: movie.release_date,
+                        movieRuntime: movie.runtime,
+                        movieBackdrop: movie.backdrop_path,
+                      }}
+                    >
                       <button className="cursor-pointer mb-3 sm:mb-4 px-3 py-1 sm:px-4 sm:py-2 bg-transparent text-white border border-white rounded w-[120px] sm:w-[150px] text-sm sm:text-base hover:bg-white hover:text-black transition-colors duration-300">
                         Details
                       </button>
                     </Link>
-                    <Link to={`/seat-order/${movie.id}`}>
-                      <button className="cursor-pointer px-3 py-1 sm:px-4 sm:py-2 bg-blue-700 text-white rounded w-[120px] sm:w-[150px] text-sm sm:text-base hover:bg-blue-800 transition-colors duration-300">
-                        Buy Ticket
-                      </button>
-                    </Link>
+                    {/* Modified to call the handleBuyTicket function */}
+                    <button
+                      onClick={() => handleBuyTicket(movie)}
+                      className="cursor-pointer px-3 py-1 sm:px-4 sm:py-2 bg-blue-700 text-white rounded w-[120px] sm:w-[150px] text-sm sm:text-base hover:bg-blue-800 transition-colors duration-300"
+                    >
+                      Buy Ticket
+                    </button>
                   </div>
                 </div>
                 <div className="p-3 sm:p-4">

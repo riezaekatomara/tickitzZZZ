@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 import centangS from "../assets/svg/centang-s.svg";
 import centang from "../assets/svg/centang-group.svg";
 import message from "../assets/svg/message-group.svg";
@@ -8,6 +8,7 @@ import Footer from "../components/Footer.jsx";
 import "../styles/button-animations.css";
 
 const Home = () => {
+  const navigate = useNavigate();
   const API_KEY = "6269e9b68e0c503c6621dfd9e2c6da29";
   const BASE_URL = "https://api.themoviedb.org/3";
   const POPULAR_MOVIES_URL = `${BASE_URL}/movie/popular?language=en-US&page=1&api_key=${API_KEY}`;
@@ -17,6 +18,7 @@ const Home = () => {
   const [popularMovies, setPopularMovies] = useState([]);
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [genres, setGenres] = useState({});
+  const upcomingMoviesRef = useRef(null);
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -51,8 +53,6 @@ const Home = () => {
     fetchMovies();
   }, []);
 
-  const upcomingMoviesRef = useRef(null);
-
   const scrollLeft = () => {
     if (upcomingMoviesRef.current) {
       upcomingMoviesRef.current.scrollBy({ left: -300, behavior: "smooth" });
@@ -65,11 +65,27 @@ const Home = () => {
     }
   };
 
+  const handleMovieDetails = (movie) => {
+    const movieGenres = movie.genre_ids.map((id) => genres[id] || "Unknown");
+
+    navigate(`/movie-details/${movie.id}`, {
+      state: {
+        movieId: movie.id,
+        movieTitle: movie.title,
+        moviePoster: movie.poster_path,
+        movieBackdrop: movie.backdrop_path,
+        movieGenres: movieGenres,
+        movieOverview: movie.overview,
+        movieReleaseDate: movie.release_date,
+      },
+    });
+  };
+
   return (
     <div className="bg-white min-h-screen flex flex-col">
       <Header />
 
-      {/* Hero Section dengan spacing yang diperbaiki */}
+      {/* Hero Section */}
       <section className="w-full mt-12 px-4 md:px-8 pt-8 md:pt-16 flex flex-col md:flex-row md:justify-between items-center mx-auto">
         <div className="w-full md:w-1/2 text-center md:text-left mb-8 md:mb-0">
           <h2 className="text-lg md:text-xl text-blue-600 font-semibold mb-3 md:mb-4">
@@ -163,7 +179,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Movies Section - Movie Grid yang diperbaiki */}
+      {/* Movies Section */}
       <section className="w-full py-12 px-4 md:px-8 mx-auto">
         <h2 className="text-2xl font-bold text-center md:text-left mb-8">
           Exciting Movies That Should Be Watched Today
@@ -184,16 +200,18 @@ const Home = () => {
                   className="absolute top-0 left-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <Link to={`/movie-details/${movie.id}`}>
-                    <button className="cursor-pointer mb-4 px-4 py-2 bg-transparent text-white border border-white rounded w-32 hover:bg-white hover:text-black transition-colors duration-300 scale-rotate-on-hover">
-                      Details
-                    </button>
-                  </Link>
-                  <Link to={"/seat-order"}>
-                    <button className="cursor-pointer px-4 py-2 bg-primary text-white rounded w-32 transition-colors duration-300 gradient-shift-on-hover">
-                      Buy Ticket
-                    </button>
-                  </Link>
+                  <button
+                    onClick={() => handleMovieDetails(movie)}
+                    className="cursor-pointer mb-4 px-4 py-2 bg-transparent text-white border border-white rounded w-32 hover:bg-white hover:text-black transition-colors duration-300 scale-rotate-on-hover"
+                  >
+                    Details
+                  </button>
+                  <button
+                    onClick={() => handleMovieDetails(movie)}
+                    className="cursor-pointer px-4 py-2 bg-primary text-white rounded w-32 transition-colors duration-300 gradient-shift-on-hover"
+                  >
+                    Buy Ticket
+                  </button>
                 </div>
               </div>
               <div className="p-4">
@@ -215,16 +233,16 @@ const Home = () => {
       </section>
 
       <div className="flex justify-center my-8">
-        <Link
-          to="/movie"
+        <button
+          onClick={() => navigate("/movie")}
           className="flex items-center text-primary hover:underline text-slide-on-hover"
         >
           <span>View All</span>
           <img src="/svg/arrow.svg" alt="Arrow" className="ml-2" />
-        </Link>
+        </button>
       </div>
 
-      {/* Upcoming Movies - diperbaiki untuk konsistensi */}
+      {/* Upcoming Movies */}
       <section className="w-full py-12 px-4 md:px-8 mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8">
           <div className="text-center sm:text-left mb-4 sm:mb-0">
@@ -269,16 +287,18 @@ const Home = () => {
                   className="absolute top-0 left-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <Link to={`/movie-details/${movie.id}`}>
-                    <button className="cursor-pointer mb-4 px-4 py-2 bg-transparent text-white border border-white rounded w-32 hover:bg-white hover:text-black transition-colors duration-300 scale-rotate-on-hover">
-                      Details
-                    </button>
-                  </Link>
-                  <Link to={"/payment-info"}>
-                    <button className="cursor-pointer px-4 py-2 bg-primary text-white rounded w-32 hover:bg-blue-700 transition-colors duration-300 pulse-on-hover">
-                      Buy Ticket
-                    </button>
-                  </Link>
+                  <button
+                    onClick={() => handleMovieDetails(movie)}
+                    className="cursor-pointer mb-4 px-4 py-2 bg-transparent text-white border border-white rounded w-32 hover:bg-white hover:text-black transition-colors duration-300 scale-rotate-on-hover"
+                  >
+                    Details
+                  </button>
+                  <button
+                    onClick={() => handleMovieDetails(movie)}
+                    className="cursor-pointer px-4 py-2 bg-primary text-white rounded w-32 hover:bg-blue-700 transition-colors duration-300 pulse-on-hover"
+                  >
+                    Buy Ticket
+                  </button>
                 </div>
               </div>
               <div className="p-4">

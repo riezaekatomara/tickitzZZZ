@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, useLocation } from "react-router";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import Ebv from "../assets/svg/ebv.svg";
@@ -9,9 +9,9 @@ import Cine from "../assets/svg/cine.svg";
 const MovieDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [genres, setGenres] = useState({});
   const [cast, setCast] = useState([]);
   const [director, setDirector] = useState("");
 
@@ -600,7 +600,7 @@ const MovieDetails = () => {
                   // Clear validation message when resetting filter
                   setShowFilterMessage(false);
                 }}
-                className="text-xs xs:text-sm text-blue-600 hover:text-blue-800"
+                className="cursor-pointertext-xs xs:text-sm text-blue-600 hover:text-blue-800"
               >
                 Reset Filter
               </button>

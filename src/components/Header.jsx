@@ -1,9 +1,8 @@
-// Updated Header.jsx
 import logo from "../assets/svg/logo-tickitz.svg";
 import MenuIcon from "../assets/svg/menu-right.svg";
 import { useState } from "react";
-import { Link } from "react-router"; // Perbaikan import
-import "../styles/button-animations.css"; // Import animasi
+import { Link } from "react-router";
+import "../styles/button-animations.css";
 
 function Header() {
   const [isNavVisible, setIsNavVisible] = useState(false);
@@ -57,7 +56,7 @@ function Header() {
                 Movie
               </Link>
               <Link
-                to="/seat-order"
+                to="#"
                 className="text-gray-700 hover:text-blue-600 font-medium px-2 py-1 transition-colors duration-200 border-fill-on-hover"
               >
                 Buy Ticket

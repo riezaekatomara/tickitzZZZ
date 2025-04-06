@@ -10,7 +10,7 @@ import Profile from "./pages/Profile.jsx";
 import SalesDashboard from "./pages/SalesDashboard.jsx";
 import Admin from "./pages/Admin.jsx";
 import AddNewMovie from "./pages/AddNewMovie.jsx";
-import { Routes, Route } from "react-router"; // Perbaikan import dari react-router-dom
+import { Routes, Route } from "react-router";
 import { UserProvider } from "./context/userContext.jsx";
 
 function App() {
@@ -22,9 +22,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/movie" element={<Movie />} />
         <Route path="/movie-details/:id" element={<MovieDetails />} />{" "}
-        {/* Update: tambahkan parameter :id */}
         <Route path="/seat-order" element={<SeatOrder />} />{" "}
-        {/* Update: tambahkan parameter :id */}
         <Route path="/payment-info" element={<PaymentInfo />} />
         <Route path="/ticket-result" element={<TicketResult />} />
         <Route path="/profile" element={<Profile />} />

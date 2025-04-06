@@ -8,8 +8,8 @@ const SeatOrder = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Mengambil data booking dari location state
-  const bookingData = location.state || {
+  // Default data jika location.state tidak ada
+  const defaultBookingData = {
     movieId: "",
     movieTitle: "Movie not selected",
     moviePoster: "",
@@ -23,9 +23,12 @@ const SeatOrder = () => {
     cinemaImage: "",
   };
 
-  // State untuk kursi yang dipilih (inisialisasi kosong)
+  // Mengambil data booking dari location state atau menggunakan default
+  const bookingData = location.state || defaultBookingData;
+
+  // State untuk kursi
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const [soldSeats, setSoldSeats] = useState([]); // State untuk kursi yang sudah terjual
+  const [soldSeats, setSoldSeats] = useState([]);
   const [totalPayment, setTotalPayment] = useState(0);
   const ticketPrice = 10;
 
@@ -117,9 +120,9 @@ const SeatOrder = () => {
     // Di sini bisa ditambahkan navigasi ke halaman pembayaran
   };
 
-  // Handle kembali ke halaman pemilihan film jika tidak ada data
+  // Handle kembali ke halaman movie ticketing jika tidak ada data
   const handleChangeMovie = () => {
-    navigate(`/movie/${bookingData.movieId}`);
+    navigate("/movie-ticketing");
   };
 
   // Membuat grid kursi
@@ -275,7 +278,7 @@ const SeatOrder = () => {
             </div>
           </div>
 
-          {/* Informasi Movie Details **/}
+          {/* Informasi Movie Details */}
           <div className="flex flex-col gap-4 sm:gap-6 lg:flex-row">
             <div className="flex-grow rounded-lg bg-white p-4 sm:p-6 shadow-sm">
               <div className="mb-4 sm:mb-6 border-b pb-4">
@@ -285,6 +288,11 @@ const SeatOrder = () => {
                       src={`https://image.tmdb.org/t/p/w500/${bookingData.moviePoster}`}
                       alt={bookingData.movieTitle}
                       className="w-full sm:w-[184px] h-auto sm:h-[117px] rounded object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src =
+                          "https://via.placeholder.com/184x117?text=No+Image";
+                      }}
                     />
                   ) : (
                     <div className="w-full sm:w-[184px] h-[117px] rounded bg-gray-200 flex items-center justify-center">
@@ -296,14 +304,20 @@ const SeatOrder = () => {
                       {bookingData.movieTitle}
                     </h2>
                     <div className="flex flex-wrap gap-2">
-                      {bookingData.movieGenres.map((genre, index) => (
-                        <span
-                          key={index}
-                          className="rounded bg-gray-100 px-2 sm:px-3 py-1 text-xs text-gray-500"
-                        >
-                          {genre}
+                      {bookingData.movieGenres.length > 0 ? (
+                        bookingData.movieGenres.map((genre, index) => (
+                          <span
+                            key={index}
+                            className="rounded bg-gray-100 px-2 sm:px-3 py-1 text-xs text-gray-500"
+                          >
+                            {genre}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="rounded bg-gray-100 px-2 sm:px-3 py-1 text-xs text-gray-500">
+                          No genres available
                         </span>
-                      ))}
+                      )}
                     </div>
                     <div className="mt-2 sm:mt-4 flex flex-col sm:flex-row sm:items-center justify-between">
                       <span className="text-xs sm:text-sm text-gray-600">
@@ -313,7 +327,7 @@ const SeatOrder = () => {
                         onClick={handleChangeMovie}
                         className="mt-2 sm:mt-0 cursor-pointer rounded bg-primary px-3 sm:px-4 py-1 text-xs sm:text-sm text-white sm:ml-4"
                       >
-                        Change
+                        Change Movie
                       </button>
                     </div>
                   </div>
@@ -360,7 +374,7 @@ const SeatOrder = () => {
               </div>
             </div>
 
-            {/* Kupon Seat **/}
+            {/* Kupon Seat */}
             <div className="relative w-full rounded-lg bg-white p-4 sm:p-6 shadow-sm lg:w-80">
               <div className="mb-4 sm:mb-6 text-center">
                 {bookingData.cinemaImage ? (

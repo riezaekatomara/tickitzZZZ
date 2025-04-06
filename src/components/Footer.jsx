@@ -1,4 +1,3 @@
-// Footer.jsx with animations added to interactive elements
 import React from "react";
 import Logo from "../assets/svg/logo-tickitz.svg";
 import Ebv from "../assets/svg/ebv.svg";
@@ -8,7 +7,7 @@ import Fb from "../assets/svg/fb.svg";
 import Ig from "../assets/svg/ig.svg";
 import X from "../assets/svg/x.svg";
 import Youtobe from "../assets/svg/youtobe.svg";
-import "../styles/button-animations.css"; // Import animasi
+import "../styles/button-animations.css";
 
 function Footer() {
   return (
