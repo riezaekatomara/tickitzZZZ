@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { selectMovie } from "../redux/slices/orderSlice.js";
 import Footer from "../components/Footer.jsx";
 import "../styles/button-animations.css";
 
 function MovieTicketing() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [allMovies, setAllMovies] = useState([]);
   const [displayedMovies, setDisplayedMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
@@ -22,49 +25,48 @@ function MovieTicketing() {
   const POPULAR_MOVIES_URL = `${BASE_URL}/movie/popular?language=en-US&page=${activePage}&api_key=${API_KEY}`;
   const GENRE_LIST_URL = `${BASE_URL}/genre/movie/list?language=en-US&api_key=${API_KEY}`;
 
-  // Fungsi untuk menangani navigasi ke detail film
-  const navigateToDetails = (movie, event) => {
-    event.preventDefault();
+  // Fungsi untuk menyimpan movie ke Redux dan return state untuk navigasi
+  const handleMovieSelection = (movie) => {
     const movieGenres = movie.genre_ids.map((id) => genres[id] || "Unknown");
 
-    navigate(`/movie-details/${movie.id}`, {
-      state: {
-        movieId: movie.id,
-        movieTitle: movie.title,
-        moviePoster: movie.poster_path,
-        movieGenres: movieGenres,
-        movieOverview: movie.overview,
-        movieReleaseDate: movie.release_date,
-        movieRuntime: movie.runtime,
-        movieBackdrop: movie.backdrop_path,
-      },
-      replace: true, // Menambahkan opsi replace untuk menghindari masalah history
-    });
+    const movieData = {
+      id: movie.id,
+      title: movie.title,
+      poster: movie.poster_path,
+      backdrop: movie.backdrop_path,
+      genres: movieGenres,
+      overview: movie.overview,
+      releaseDate: movie.release_date,
+      runtime: movie.runtime,
+    };
 
-    // Scroll ke atas setelah navigasi
+    dispatch(selectMovie(movieData));
+
+    return {
+      movieId: movie.id,
+      movieTitle: movie.title,
+      moviePoster: movie.poster_path,
+      movieBackdrop: movie.backdrop_path,
+      movieGenres: movieGenres,
+      movieOverview: movie.overview,
+      movieReleaseDate: movie.release_date,
+      movieRuntime: movie.runtime,
+    };
+  };
+
+  // Fungsi untuk navigasi ke detail film
+  const navigateToDetails = (movie, event) => {
+    event.preventDefault();
+    const state = handleMovieSelection(movie);
+    navigate(`/movie-details/${movie.id}`, { state });
     window.scrollTo(0, 0);
   };
 
   // Fungsi untuk menangani klik tombol "Buy Ticket"
   const handleBuyTicket = (movie, event) => {
     event?.preventDefault();
-    const movieGenres = movie.genre_ids.map((id) => genres[id] || "Unknown");
-
-    navigate(`/movie-details/${movie.id}`, {
-      state: {
-        movieId: movie.id,
-        movieTitle: movie.title,
-        moviePoster: movie.poster_path,
-        movieGenres: movieGenres,
-        movieOverview: movie.overview,
-        movieReleaseDate: movie.release_date,
-        movieRuntime: movie.runtime,
-        movieBackdrop: movie.backdrop_path,
-      },
-      replace: true, // Menambahkan opsi replace untuk menghindari masalah history
-    });
-
-    // Scroll ke atas setelah navigasi
+    const state = handleMovieSelection(movie);
+    navigate(`/movie-details/${movie.id}`, { state });
     window.scrollTo(0, 0);
   };
 
@@ -337,18 +339,7 @@ function MovieTicketing() {
                     <Link
                       to={`/movie-details/${movie.id}`}
                       onClick={(e) => navigateToDetails(movie, e)}
-                      state={{
-                        movieId: movie.id,
-                        movieTitle: movie.title,
-                        moviePoster: movie.poster_path,
-                        movieGenres: movie.genre_ids.map(
-                          (id) => genres[id] || "Unknown"
-                        ),
-                        movieOverview: movie.overview,
-                        movieReleaseDate: movie.release_date,
-                        movieRuntime: movie.runtime,
-                        movieBackdrop: movie.backdrop_path,
-                      }}
+                      state={handleMovieSelection(movie)}
                     >
                       <button className="cursor-pointer mb-3 sm:mb-4 px-3 py-1 sm:px-4 sm:py-2 bg-transparent text-white border border-white rounded w-[120px] sm:w-[150px] text-sm sm:text-base hover:bg-white hover:text-black transition-colors duration-300">
                         Details

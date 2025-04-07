@@ -1,5 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectMovie,
+  selectDate,
+  selectTime,
+  selectCity,
+  selectCinema,
+} from "../redux/slices/orderSlice.js";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import Ebv from "../assets/svg/ebv.svg";
@@ -10,22 +18,36 @@ const MovieDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const [movie, setMovie] = useState(null);
+  const dispatch = useDispatch();
+  const orderState = useSelector((state) => state.order);
+
+  // Initialize state from Redux where available
+  const [movie, setMovie] = useState(orderState.selectedMovie);
   const [loading, setLoading] = useState(true);
   const [cast, setCast] = useState([]);
   const [director, setDirector] = useState("");
+  const [genres, setGenres] = useState({});
 
-  // State untuk fitur booking
-  const [bookingDate, setBookingDate] = useState("choose");
-  const [bookingTime, setBookingTime] = useState("choose");
-  const [bookingCity, setBookingCity] = useState("choose");
-  const [selectedCinema, setSelectedCinema] = useState("");
+  // Booking state initialized from Redux
+  const [bookingDate, setBookingDate] = useState(
+    orderState.selectedDate || "choose"
+  );
+  const [bookingTime, setBookingTime] = useState(
+    orderState.selectedTime || "choose"
+  );
+  const [bookingCity, setBookingCity] = useState(
+    orderState.selectedCity || "choose"
+  );
+  const [selectedCinema, setSelectedCinema] = useState(
+    orderState.selectedCinema?.id || ""
+  );
+
   const [activePage, setActivePage] = useState(1);
   const [hasSelectedTime, setHasSelectedTime] = useState(false);
   const [hasSelectedCity, setHasSelectedCity] = useState(false);
   const [hasSelectedDate, setHasSelectedDate] = useState(false);
 
-  // State untuk fitur filter
+  // Filter related state
   const [filteredCinemas, setFilteredCinemas] = useState(null);
   const [isFiltered, setIsFiltered] = useState(false);
   const [showFilterMessage, setShowFilterMessage] = useState(false);
@@ -34,7 +56,7 @@ const MovieDetails = () => {
   const API_KEY = "6269e9b68e0c503c6621dfd9e2c6da29";
   const BASE_URL = "https://api.themoviedb.org/3";
 
-  // Data bioskop berdasarkan halaman paginasi
+  // Cinema data
   const cinemasByPage = {
     1: [
       { id: "ebv-1", name: "EBV.id", image: Ebv },
@@ -62,19 +84,89 @@ const MovieDetails = () => {
     ],
   };
 
-  // Semua data bioskop dalam array datar untuk keperluan filter
   const allCinemas = Object.values(cinemasByPage).flat();
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
 
-  useEffect(() => {
-    // Mendapatkan tanggal hari ini untuk nilai minimum input date
-    const today = new Date();
-    const formattedDate = today.toISOString().split("T")[0];
+    // If state is passed from navigation, use that
+    if (location.state) {
+      const state = location.state;
+      const movieData = {
+        id: state.movieId,
+        title: state.movieTitle,
+        poster_path: state.moviePoster,
+        backdrop_path: state.movieBackdrop,
+        genres: state.movieGenres.map((name) => ({ name })),
+        overview: state.movieOverview,
+        release_date: state.movieReleaseDate,
+        runtime: state.movieRuntime,
+      };
+      setMovie(movieData);
+      dispatch(selectMovie(movieData));
+      setLoading(false);
+    } else {
+      // Otherwise fetch from API
+      const fetchMovieDetails = async () => {
+        if (!id) {
+          navigate("/movie");
+          return;
+        }
 
-    // Mengambil data daftar genre film
+        try {
+          const response = await fetch(
+            `${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=en-US`
+          );
+          const data = await response.json();
+
+          const movieData = {
+            id: data.id,
+            title: data.title,
+            poster_path: data.poster_path,
+            backdrop_path: data.backdrop_path,
+            genres: data.genres,
+            overview: data.overview,
+            release_date: data.release_date,
+            runtime: data.runtime,
+          };
+
+          setMovie(movieData);
+          dispatch(
+            selectMovie({
+              id: data.id,
+              title: data.title,
+              poster: data.poster_path,
+              backdrop: data.backdrop_path,
+              genres: data.genres.map((g) => g.name),
+              overview: data.overview,
+              releaseDate: data.release_date,
+              runtime: data.runtime,
+            })
+          );
+
+          // Fetch credits for director and cast
+          const creditsResponse = await fetch(
+            `${BASE_URL}/movie/${id}/credits?api_key=${API_KEY}&language=en-US`
+          );
+          const creditsData = await creditsResponse.json();
+
+          const directorInfo = creditsData.crew.find(
+            (person) => person.job === "Director"
+          );
+          setDirector(directorInfo ? directorInfo.name : "Unknown");
+
+          setCast(creditsData.cast.slice(0, 3).map((actor) => actor.name));
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching movie details:", error);
+          setLoading(false);
+        }
+      };
+
+      fetchMovieDetails();
+    }
+
+    // Fetch genres
     const fetchGenres = async () => {
       try {
         const response = await fetch(
@@ -87,51 +179,14 @@ const MovieDetails = () => {
         }, {});
         setGenres(genresMap);
       } catch (error) {
-        console.error("Error mengambil data genre:", error);
-      }
-    };
-
-    // Mengambil detail film dari API
-    const fetchMovieDetails = async () => {
-      if (!id) {
-        navigate("/movie");
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          `${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=en-US`
-        );
-        const data = await response.json();
-        setMovie(data);
-
-        // Mengambil kredit untuk sutradara dan pemeran
-        const creditsResponse = await fetch(
-          `${BASE_URL}/movie/${id}/credits?api_key=${API_KEY}&language=en-US`
-        );
-        const creditsData = await creditsResponse.json();
-
-        // Mendapatkan data sutradara
-        const directorInfo = creditsData.crew.find(
-          (person) => person.job === "Director"
-        );
-        setDirector(directorInfo ? directorInfo.name : "Unknown");
-
-        // Mendapatkan 3 pemain utama
-        setCast(creditsData.cast.slice(0, 3).map((actor) => actor.name));
-
-        setLoading(false);
-      } catch (error) {
-        console.error("Error mengambil detail film:", error);
-        setLoading(false);
+        console.error("Error fetching genres:", error);
       }
     };
 
     fetchGenres();
-    fetchMovieDetails();
-  }, [id, navigate]);
+  }, [id, navigate, location.state, dispatch]);
 
-  // Mengubah format durasi dari menit ke jam dan menit
+  // Helper functions
   const formatRuntime = (minutes) => {
     if (!minutes) return "Unknown";
     const hours = Math.floor(minutes / 60);
@@ -139,14 +194,12 @@ const MovieDetails = () => {
     return `${hours} hours ${mins} minutes`;
   };
 
-  // Memformat tanggal ke format yang lebih mudah dibaca
   const formatDate = (dateString) => {
     if (!dateString || dateString === "choose") return "Unknown";
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // Memfilter bioskop berdasarkan kota yang dipilih
   const filterCinemasByCity = (city) => {
     const cityHash = city
       .split("")
@@ -156,101 +209,90 @@ const MovieDetails = () => {
       return (index + cityHash) % 3 === 0;
     });
 
-    if (filteredCinemas.length < 2) {
-      return allCinemas.slice(0, 2);
-    }
-
-    return filteredCinemas;
+    return filteredCinemas.length < 2
+      ? allCinemas.slice(0, 2)
+      : filteredCinemas;
   };
 
-  // Memeriksa apakah bioskop tersedia berdasarkan filter yang aktif
   const isCinemaAvailable = (cinemaId) => {
     if (!hasSelectedDate || !hasSelectedTime || !hasSelectedCity) return true;
-
     const availableCinemas = filterCinemasByCity(bookingCity);
     return availableCinemas.some((cinema) => cinema.id === cinemaId);
   };
 
-  // Menangani klik tombol filter
+  // Event handlers with Redux integration
   const handleFilter = () => {
     if (bookingDate === "choose") {
-      setFilterMessage("Silakan pilih tanggal tayangan terlebih dahulu!");
+      setFilterMessage("Please select a show date first!");
       setShowFilterMessage(true);
       return;
     }
 
     if (!bookingTime || bookingTime === "choose") {
-      setFilterMessage("Silakan pilih waktu tayangan terlebih dahulu!");
+      setFilterMessage("Please select a show time first!");
       setShowFilterMessage(true);
       return;
     }
 
     if (!bookingCity || bookingCity === "choose") {
-      setFilterMessage("Silakan pilih lokasi bioskop terlebih dahulu!");
+      setFilterMessage("Please select a cinema location first!");
       setShowFilterMessage(true);
       return;
     }
 
-    // Menghapus pesan validasi saat tombol filter diklik
     setShowFilterMessage(false);
-
     setSelectedCinema("");
     const filtered = filterCinemasByCity(bookingCity);
     setFilteredCinemas(filtered);
     setIsFiltered(true);
 
     setFilterMessage(
-      `Menampilkan ${
-        filtered.length
-      } bioskop di ${bookingCity} pada ${formatDate(
+      `Showing ${filtered.length} cinemas in ${bookingCity} on ${formatDate(
         bookingDate
-      )} jam ${bookingTime}`
+      )} at ${bookingTime}`
     );
     setShowFilterMessage(true);
-    // Menyembunyikan pesan sukses filter setelah 5.25 detik
     setTimeout(() => setShowFilterMessage(false), 5250);
     setActivePage(1);
   };
 
-  // Menangani pemilihan bioskop
   const handleCinemaSelect = (cinemaId) => {
     const selectedCinemaObject = allCinemas.find(
       (cinema) => cinema.id === cinemaId
     );
 
-    // Memeriksa apakah semua filter telah dipilih
     if (hasSelectedDate && hasSelectedTime && hasSelectedCity) {
-      // Memeriksa apakah bioskop tersedia dengan filter yang aktif
       if (!isCinemaAvailable(cinemaId)) {
         setFilterMessage(
-          `Bioskop ${selectedCinemaObject.name} tidak tersedia pada waktu dan lokasi yang dipilih. Gunakan filter untuk melihat daftar bioskop yang tersedia.`
+          `${selectedCinemaObject.name} is not available at the selected time and location. Use filters to see available cinemas.`
         );
         setShowFilterMessage(true);
-        // Tidak perlu set timeout untuk menyembunyikan pesan
         return;
       }
     }
 
-    // Jika memilih bioskop berbeda, hapus pesan validasi
     if (selectedCinema !== cinemaId) {
       setShowFilterMessage(false);
     }
 
     setSelectedCinema(cinemaId);
+    dispatch(
+      selectCinema({
+        id: cinemaId,
+        name: selectedCinemaObject.name,
+        image: selectedCinemaObject.image,
+      })
+    );
   };
 
-  // Menangani perubahan halaman paginasi
   const handlePageChange = (page) => {
     setActivePage(page);
     setSelectedCinema("");
-    // Menghapus pesan validasi saat mengganti halaman
     setShowFilterMessage(false);
   };
 
-  // Menangani pemilihan tanggal
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
-    // Menghapus pesan validasi saat filter diubah
     setShowFilterMessage(false);
 
     if (selectedDate !== "choose") {
@@ -258,21 +300,20 @@ const MovieDetails = () => {
       setHasSelectedDate(true);
       setIsFiltered(false);
       setFilteredCinemas(null);
+      dispatch(selectDate(selectedDate));
 
-      // Hapus pilihan bioskop jika tidak tersedia dengan tanggal baru
       if (selectedCinema && !isCinemaAvailable(selectedCinema)) {
         setSelectedCinema("");
       }
     } else {
       setBookingDate(selectedDate);
       setHasSelectedDate(false);
+      dispatch(selectDate(null));
     }
   };
 
-  // Menangani pemilihan waktu
   const handleTimeChange = (e) => {
     const selectedTime = e.target.value;
-    // Menghapus pesan validasi saat filter diubah
     setShowFilterMessage(false);
 
     if (selectedTime !== "choose") {
@@ -280,21 +321,20 @@ const MovieDetails = () => {
       setHasSelectedTime(true);
       setIsFiltered(false);
       setFilteredCinemas(null);
+      dispatch(selectTime(selectedTime));
 
-      // Hapus pilihan bioskop jika tidak tersedia dengan waktu baru
       if (selectedCinema && !isCinemaAvailable(selectedCinema)) {
         setSelectedCinema("");
       }
     } else {
       setBookingTime(selectedTime);
       setHasSelectedTime(false);
+      dispatch(selectTime(null));
     }
   };
 
-  // Menangani pemilihan kota
   const handleCityChange = (e) => {
     const selectedCity = e.target.value;
-    // Menghapus pesan validasi saat filter diubah
     setShowFilterMessage(false);
 
     if (selectedCity !== "choose") {
@@ -302,101 +342,74 @@ const MovieDetails = () => {
       setHasSelectedCity(true);
       setIsFiltered(false);
       setFilteredCinemas(null);
+      dispatch(selectCity(selectedCity));
 
-      // Hapus pilihan bioskop jika tidak tersedia di kota baru
       if (selectedCinema && !isCinemaAvailable(selectedCinema)) {
         setSelectedCinema("");
       }
     } else {
       setBookingCity(selectedCity);
       setHasSelectedCity(false);
+      dispatch(selectCity(null));
     }
   };
 
-  // Menangani pemesanan - navigasi ke halaman pemilihan kursi
   const handleBookNow = () => {
     if (bookingDate === "choose") {
-      setFilterMessage("Silakan pilih tanggal terlebih dahulu!");
+      setFilterMessage("Please select a date first!");
       setShowFilterMessage(true);
       return;
     }
 
     if (!selectedCinema) {
-      setFilterMessage("Silakan pilih bioskop terlebih dahulu!");
+      setFilterMessage("Please select a cinema first!");
       setShowFilterMessage(true);
       return;
     }
 
     if (!bookingTime || bookingTime === "choose") {
-      setFilterMessage("Silakan pilih waktu tayangan terlebih dahulu!");
+      setFilterMessage("Please select a show time first!");
       setShowFilterMessage(true);
       return;
     }
 
     if (!bookingCity || bookingCity === "choose") {
-      setFilterMessage("Silakan pilih lokasi bioskop terlebih dahulu!");
+      setFilterMessage("Please select a location first!");
       setShowFilterMessage(true);
       return;
     }
 
-    // Memeriksa apakah bioskop tersedia dengan filter saat ini
     if (!isCinemaAvailable(selectedCinema)) {
       const selectedCinemaDetails = allCinemas.find(
         (cinema) => cinema.id === selectedCinema
       );
 
       setFilterMessage(
-        `Bioskop ${selectedCinemaDetails.name} tidak tersedia pada waktu dan lokasi yang dipilih. Gunakan filter untuk melihat daftar bioskop yang tersedia.`
+        `${selectedCinemaDetails.name} is not available at the selected time and location. Use filters to see available cinemas.`
       );
       setShowFilterMessage(true);
-      // Tidak perlu set timeout untuk menyembunyikan pesan
       return;
     }
 
-    const selectedCinemaDetails = allCinemas.find(
-      (cinema) => cinema.id === selectedCinema
-    );
-
-    // Menyiapkan data pemesanan untuk dikirim ke halaman pemilihan kursi
-    const bookingData = {
-      movieId: movie.id,
-      movieTitle: movie.title,
-      moviePoster: movie.poster_path,
-      movieGenres: movie.genres.map((genre) => genre.name),
-      bookingDate: bookingDate,
-      formattedDate: formatDate(bookingDate),
-      bookingTime: bookingTime,
-      bookingCity: bookingCity,
-      cinemaId: selectedCinema,
-      cinemaName: selectedCinemaDetails.name,
-      cinemaImage: selectedCinemaDetails.image,
-    };
-
-    // Navigasi ke halaman pemilihan kursi dengan data pemesanan
-    navigate("/seat-order", { state: bookingData });
+    navigate("/seat-order");
   };
 
-  // Mendapatkan daftar bioskop yang akan ditampilkan berdasarkan status filter dan paginasi
   const getCinemasToDisplay = () => {
     if (isFiltered && filteredCinemas) {
       const startIndex = (activePage - 1) * 4;
       const endIndex = startIndex + 4;
       return filteredCinemas.slice(startIndex, endIndex);
-    } else {
-      return cinemasByPage[activePage] || [];
     }
+    return cinemasByPage[activePage] || [];
   };
 
-  // Menghitung total halaman untuk paginasi
   const getTotalPages = () => {
     if (isFiltered && filteredCinemas) {
       return Math.ceil(filteredCinemas.length / 4);
-    } else {
-      return Object.keys(cinemasByPage).length;
     }
+    return Object.keys(cinemasByPage).length;
   };
 
-  // Mendapatkan tanggal hari ini untuk atribut min di input date
   const today = new Date().toISOString().split("T")[0];
 
   if (loading) {
@@ -427,7 +440,7 @@ const MovieDetails = () => {
     <div className="bg-white-100 min-h-screen">
       <Header />
 
-      {/* Gambar Latar Belakang Film - Responsif */}
+      {/* Movie Backdrop */}
       <div
         className="w-full h-[200px] xs:h-[250px] sm:h-[300px] md:h-[350px] lg:h-[415px] bg-cover bg-center"
         style={{
@@ -437,11 +450,11 @@ const MovieDetails = () => {
         }}
       ></div>
 
-      {/* Detail Film - Kontainer Responsif */}
+      {/* Movie Details Container */}
       <div className="mx-3 xs:mx-4 md:mx-8 lg:mx-[70px] p-3 xs:p-4 md:p-6 bg-white mt-4 xs:mt-6 rounded-md shadow-sm">
-        {/* Bagian Informasi Film - Flex Responsif */}
+        {/* Movie Info Section */}
         <div className="relative flex flex-col md:flex-row md:items-start mb-0 gap-4 md:gap-6">
-          {/* Poster Film - Ukuran dan Posisi Responsif */}
+          {/* Movie Poster */}
           <div className="relative -mt-16 xs:-mt-20 md:-mt-32 lg:-mt-40 w-full max-w-[180px] xs:max-w-[220px] md:max-w-[264px] mx-auto md:mx-0 z-10">
             <img
               src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
@@ -450,13 +463,13 @@ const MovieDetails = () => {
             />
           </div>
 
-          {/* Detail Film - Layout Responsif */}
+          {/* Movie Details */}
           <div className="flex-1 mt-2 xs:mt-4 md:mt-0">
             <h2 className="text-xl xs:text-2xl md:text-3xl font-bold text-center md:text-left">
               {movie.title}
             </h2>
 
-            {/* Genre Film - Responsif */}
+            {/* Genres */}
             <div className="flex flex-wrap justify-center md:justify-start gap-2 mt-2">
               {movie.genres.map((genre) => (
                 <span
@@ -468,7 +481,7 @@ const MovieDetails = () => {
               ))}
             </div>
 
-            {/* Grid Informasi Film - Layout Responsif */}
+            {/* Info Grid */}
             <div className="mt-4 grid grid-cols-1 xs:grid-cols-2 gap-3 xs:gap-4 text-center xs:text-left">
               <div className="space-y-1">
                 <p className="text-gray-500 text-xs xs:text-sm">Release Date</p>
@@ -498,7 +511,7 @@ const MovieDetails = () => {
           </div>
         </div>
 
-        {/* Bagian Sinopsis */}
+        {/* Synopsis Section */}
         <div className="mt-5 xs:mt-6 md:mt-8">
           <h3 className="text-lg xs:text-xl font-semibold">Synopsis</h3>
           <p className="text-sm xs:text-base text-gray-700 mt-2">
@@ -506,11 +519,12 @@ const MovieDetails = () => {
           </p>
         </div>
 
-        {/* UPDATED BOOKING SECTION - TO MATCH SCREENSHOT */}
+        {/* Booking Section */}
         <div className="mt-8">
           <h1 className="text-2xl font-bold mb-8">Book Tickets</h1>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            {/* Date Picker */}
             <div>
               <h2 className="font-medium mb-2">Choose Date</h2>
               <div className="relative flex items-center">
@@ -560,15 +574,14 @@ const MovieDetails = () => {
                   <option value="choose" disabled={hasSelectedDate}>
                     Choose Date
                   </option>
-                  <option value={today}>21/07/20</option>
+                  <option value={today}>Today</option>
                   {[...Array(7)].map((_, i) => {
                     const nextDate = new Date();
                     nextDate.setDate(nextDate.getDate() + i + 1);
                     const nextDateStr = nextDate.toISOString().split("T")[0];
                     return (
                       <option key={i} value={nextDateStr}>
-                        {nextDate.getDate()}/{nextDate.getMonth() + 1}/
-                        {nextDate.getFullYear().toString().substr(-2)}
+                        {nextDate.toLocaleDateString()}
                       </option>
                     );
                   })}
@@ -576,6 +589,7 @@ const MovieDetails = () => {
               </div>
             </div>
 
+            {/* Time Picker */}
             <div>
               <h2 className="font-medium mb-2">Choose Time</h2>
               <div className="relative flex items-center">
@@ -620,6 +634,7 @@ const MovieDetails = () => {
               </div>
             </div>
 
+            {/* Location Picker */}
             <div>
               <h2 className="font-medium mb-2">Choose Location</h2>
               <div className="relative flex items-center">
@@ -668,9 +683,10 @@ const MovieDetails = () => {
             </div>
           </div>
 
+          {/* Filter Button */}
           <button
             onClick={handleFilter}
-            className={`w-full md:w-auto px-8 py-3 rounded-md text-white font-medium transition ${
+            className={`cursor-pointer w-full md:w-auto px-8 py-3 rounded-md text-white font-medium transition ${
               bookingDate !== "choose" &&
               bookingTime !== "choose" &&
               bookingCity !== "choose"
@@ -686,18 +702,18 @@ const MovieDetails = () => {
             Filter
           </button>
 
-          {/* Pesan Filter */}
+          {/* Filter Message */}
           {showFilterMessage && (
             <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-blue-800">
               {filterMessage}
             </div>
           )}
 
-          {/* Indikator Filter Aktif */}
+          {/* Active Filter Indicator */}
           {isFiltered && (
             <div className="mt-4 flex items-center gap-2">
               <span className="text-sm text-gray-700">
-                <span className="font-semibold">Filter aktif:</span>{" "}
+                <span className="font-semibold">Active filter:</span>{" "}
                 {bookingCity}, {formatDate(bookingDate)}, {bookingTime}
               </span>
               <button
@@ -715,19 +731,21 @@ const MovieDetails = () => {
           )}
         </div>
 
-        {/* Choose Cinema Section - UPDATED TO MATCH SCREENSHOT */}
+        {/* Cinema Selection Section */}
         <div className="mt-10">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold">Choose Cinema</h2>
             {isFiltered && filteredCinemas && (
-              <span className="text-gray-500 text-sm">39 Result</span>
+              <span className="text-gray-500 text-sm">
+                {filteredCinemas.length} Result
+              </span>
             )}
           </div>
 
           {isFiltered && filteredCinemas && filteredCinemas.length === 0 ? (
             <div className="p-4 bg-gray-50 rounded text-center">
-              Tidak ada bioskop yang tersedia dengan filter yang dipilih.
-              Silahkan ubah filter Anda.
+              No cinemas available with the selected filters. Please adjust your
+              filters.
             </div>
           ) : (
             <>
@@ -776,7 +794,7 @@ const MovieDetails = () => {
             </>
           )}
 
-          {/* Tombol Pesan Sekarang */}
+          {/* Book Now Button */}
           <div className="flex justify-center mt-6">
             <button
               onClick={handleBookNow}
