@@ -25,7 +25,7 @@ const MovieDetails = () => {
   const [hasSelectedCity, setHasSelectedCity] = useState(false);
   const [hasSelectedDate, setHasSelectedDate] = useState(false);
 
-  // New states for filtering
+  // State untuk fitur filter
   const [filteredCinemas, setFilteredCinemas] = useState(null);
   const [isFiltered, setIsFiltered] = useState(false);
   const [showFilterMessage, setShowFilterMessage] = useState(false);
@@ -34,7 +34,7 @@ const MovieDetails = () => {
   const API_KEY = "6269e9b68e0c503c6621dfd9e2c6da29";
   const BASE_URL = "https://api.themoviedb.org/3";
 
-  // Data cinemas berdasarkan halaman
+  // Data bioskop berdasarkan halaman paginasi
   const cinemasByPage = {
     1: [
       { id: "ebv-1", name: "EBV.id", image: Ebv },
@@ -62,15 +62,19 @@ const MovieDetails = () => {
     ],
   };
 
-  // All cinemas in a flat array for filtering
+  // Semua data bioskop dalam array datar untuk keperluan filter
   const allCinemas = Object.values(cinemasByPage).flat();
 
   useEffect(() => {
-    // Get today's date for minimum date value
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    // Mendapatkan tanggal hari ini untuk nilai minimum input date
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0];
 
-    // Fetch genres list
+    // Mengambil data daftar genre film
     const fetchGenres = async () => {
       try {
         const response = await fetch(
@@ -83,11 +87,11 @@ const MovieDetails = () => {
         }, {});
         setGenres(genresMap);
       } catch (error) {
-        console.error("Error fetching genres:", error);
+        console.error("Error mengambil data genre:", error);
       }
     };
 
-    // Fetch movie details
+    // Mengambil detail film dari API
     const fetchMovieDetails = async () => {
       if (!id) {
         navigate("/movie");
@@ -101,24 +105,24 @@ const MovieDetails = () => {
         const data = await response.json();
         setMovie(data);
 
-        // Fetch credits for director and cast
+        // Mengambil kredit untuk sutradara dan pemeran
         const creditsResponse = await fetch(
           `${BASE_URL}/movie/${id}/credits?api_key=${API_KEY}&language=en-US`
         );
         const creditsData = await creditsResponse.json();
 
-        // Get director
+        // Mendapatkan data sutradara
         const directorInfo = creditsData.crew.find(
           (person) => person.job === "Director"
         );
         setDirector(directorInfo ? directorInfo.name : "Unknown");
 
-        // Get top cast members
+        // Mendapatkan 3 pemain utama
         setCast(creditsData.cast.slice(0, 3).map((actor) => actor.name));
 
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching movie details:", error);
+        console.error("Error mengambil detail film:", error);
         setLoading(false);
       }
     };
@@ -127,7 +131,7 @@ const MovieDetails = () => {
     fetchMovieDetails();
   }, [id, navigate]);
 
-  // Convert minutes to hours and minutes
+  // Mengubah format durasi dari menit ke jam dan menit
   const formatRuntime = (minutes) => {
     if (!minutes) return "Unknown";
     const hours = Math.floor(minutes / 60);
@@ -135,14 +139,14 @@ const MovieDetails = () => {
     return `${hours} hours ${mins} minutes`;
   };
 
-  // Format date
+  // Memformat tanggal ke format yang lebih mudah dibaca
   const formatDate = (dateString) => {
     if (!dateString || dateString === "choose") return "Unknown";
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // Filter cinemas based on city
+  // Memfilter bioskop berdasarkan kota yang dipilih
   const filterCinemasByCity = (city) => {
     const cityHash = city
       .split("")
@@ -159,7 +163,7 @@ const MovieDetails = () => {
     return filteredCinemas;
   };
 
-  // Check if cinema is available based on current filters
+  // Memeriksa apakah bioskop tersedia berdasarkan filter yang aktif
   const isCinemaAvailable = (cinemaId) => {
     if (!hasSelectedDate || !hasSelectedTime || !hasSelectedCity) return true;
 
@@ -167,7 +171,7 @@ const MovieDetails = () => {
     return availableCinemas.some((cinema) => cinema.id === cinemaId);
   };
 
-  // Handle filter button click
+  // Menangani klik tombol filter
   const handleFilter = () => {
     if (bookingDate === "choose") {
       setFilterMessage("Silakan pilih tanggal tayangan terlebih dahulu!");
@@ -187,7 +191,7 @@ const MovieDetails = () => {
       return;
     }
 
-    // Clear validation message when filter button is clicked
+    // Menghapus pesan validasi saat tombol filter diklik
     setShowFilterMessage(false);
 
     setSelectedCinema("");
@@ -203,31 +207,31 @@ const MovieDetails = () => {
       )} jam ${bookingTime}`
     );
     setShowFilterMessage(true);
-    // Keep the filter success message for 3 seconds
+    // Menyembunyikan pesan sukses filter setelah 5.25 detik
     setTimeout(() => setShowFilterMessage(false), 5250);
     setActivePage(1);
   };
 
-  // Handle cinema selection
+  // Menangani pemilihan bioskop
   const handleCinemaSelect = (cinemaId) => {
     const selectedCinemaObject = allCinemas.find(
       (cinema) => cinema.id === cinemaId
     );
 
-    // Check if all filters are selected
+    // Memeriksa apakah semua filter telah dipilih
     if (hasSelectedDate && hasSelectedTime && hasSelectedCity) {
-      // Check if the cinema is available with the current filters
+      // Memeriksa apakah bioskop tersedia dengan filter yang aktif
       if (!isCinemaAvailable(cinemaId)) {
         setFilterMessage(
           `Bioskop ${selectedCinemaObject.name} tidak tersedia pada waktu dan lokasi yang dipilih. Gunakan filter untuk melihat daftar bioskop yang tersedia.`
         );
         setShowFilterMessage(true);
-        // Don't set timeout to auto-hide the message
+        // Tidak perlu set timeout untuk menyembunyikan pesan
         return;
       }
     }
 
-    // If selecting a different cinema, clear the validation message
+    // Jika memilih bioskop berbeda, hapus pesan validasi
     if (selectedCinema !== cinemaId) {
       setShowFilterMessage(false);
     }
@@ -235,18 +239,18 @@ const MovieDetails = () => {
     setSelectedCinema(cinemaId);
   };
 
-  // Handle page change in pagination
+  // Menangani perubahan halaman paginasi
   const handlePageChange = (page) => {
     setActivePage(page);
     setSelectedCinema("");
-    // Clear validation message when changing pages
+    // Menghapus pesan validasi saat mengganti halaman
     setShowFilterMessage(false);
   };
 
-  // Handle date selection
+  // Menangani pemilihan tanggal
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
-    // Clear validation message when any filter is changed
+    // Menghapus pesan validasi saat filter diubah
     setShowFilterMessage(false);
 
     if (selectedDate !== "choose") {
@@ -255,7 +259,7 @@ const MovieDetails = () => {
       setIsFiltered(false);
       setFilteredCinemas(null);
 
-      // Clear cinema selection if it's not available with new date
+      // Hapus pilihan bioskop jika tidak tersedia dengan tanggal baru
       if (selectedCinema && !isCinemaAvailable(selectedCinema)) {
         setSelectedCinema("");
       }
@@ -265,10 +269,10 @@ const MovieDetails = () => {
     }
   };
 
-  // Handle time selection
+  // Menangani pemilihan waktu
   const handleTimeChange = (e) => {
     const selectedTime = e.target.value;
-    // Clear validation message when any filter is changed
+    // Menghapus pesan validasi saat filter diubah
     setShowFilterMessage(false);
 
     if (selectedTime !== "choose") {
@@ -277,7 +281,7 @@ const MovieDetails = () => {
       setIsFiltered(false);
       setFilteredCinemas(null);
 
-      // Clear cinema selection if it's not available with new time
+      // Hapus pilihan bioskop jika tidak tersedia dengan waktu baru
       if (selectedCinema && !isCinemaAvailable(selectedCinema)) {
         setSelectedCinema("");
       }
@@ -287,10 +291,10 @@ const MovieDetails = () => {
     }
   };
 
-  // Handle city selection
+  // Menangani pemilihan kota
   const handleCityChange = (e) => {
     const selectedCity = e.target.value;
-    // Clear validation message when any filter is changed
+    // Menghapus pesan validasi saat filter diubah
     setShowFilterMessage(false);
 
     if (selectedCity !== "choose") {
@@ -299,7 +303,7 @@ const MovieDetails = () => {
       setIsFiltered(false);
       setFilteredCinemas(null);
 
-      // Clear cinema selection if it's not available in new city
+      // Hapus pilihan bioskop jika tidak tersedia di kota baru
       if (selectedCinema && !isCinemaAvailable(selectedCinema)) {
         setSelectedCinema("");
       }
@@ -309,7 +313,7 @@ const MovieDetails = () => {
     }
   };
 
-  // Handle booking - navigating to seat order page
+  // Menangani pemesanan - navigasi ke halaman pemilihan kursi
   const handleBookNow = () => {
     if (bookingDate === "choose") {
       setFilterMessage("Silakan pilih tanggal terlebih dahulu!");
@@ -335,7 +339,7 @@ const MovieDetails = () => {
       return;
     }
 
-    // Check if the cinema is available with the current filters
+    // Memeriksa apakah bioskop tersedia dengan filter saat ini
     if (!isCinemaAvailable(selectedCinema)) {
       const selectedCinemaDetails = allCinemas.find(
         (cinema) => cinema.id === selectedCinema
@@ -345,7 +349,7 @@ const MovieDetails = () => {
         `Bioskop ${selectedCinemaDetails.name} tidak tersedia pada waktu dan lokasi yang dipilih. Gunakan filter untuk melihat daftar bioskop yang tersedia.`
       );
       setShowFilterMessage(true);
-      // Don't set timeout to auto-hide the message
+      // Tidak perlu set timeout untuk menyembunyikan pesan
       return;
     }
 
@@ -353,7 +357,7 @@ const MovieDetails = () => {
       (cinema) => cinema.id === selectedCinema
     );
 
-    // Prepare booking data to pass to seat order page
+    // Menyiapkan data pemesanan untuk dikirim ke halaman pemilihan kursi
     const bookingData = {
       movieId: movie.id,
       movieTitle: movie.title,
@@ -368,11 +372,11 @@ const MovieDetails = () => {
       cinemaImage: selectedCinemaDetails.image,
     };
 
-    // Navigate to seat order page with booking data
+    // Navigasi ke halaman pemilihan kursi dengan data pemesanan
     navigate("/seat-order", { state: bookingData });
   };
 
-  // Get cinema items to display based on filter status and pagination
+  // Mendapatkan daftar bioskop yang akan ditampilkan berdasarkan status filter dan paginasi
   const getCinemasToDisplay = () => {
     if (isFiltered && filteredCinemas) {
       const startIndex = (activePage - 1) * 4;
@@ -383,7 +387,7 @@ const MovieDetails = () => {
     }
   };
 
-  // Calculate total pages for pagination
+  // Menghitung total halaman untuk paginasi
   const getTotalPages = () => {
     if (isFiltered && filteredCinemas) {
       return Math.ceil(filteredCinemas.length / 4);
@@ -392,7 +396,7 @@ const MovieDetails = () => {
     }
   };
 
-  // Get today's date for min attribute
+  // Mendapatkan tanggal hari ini untuk atribut min di input date
   const today = new Date().toISOString().split("T")[0];
 
   if (loading) {
@@ -423,7 +427,7 @@ const MovieDetails = () => {
     <div className="bg-white-100 min-h-screen">
       <Header />
 
-      {/* Hero Image - Responsive Height */}
+      {/* Gambar Latar Belakang Film - Responsif */}
       <div
         className="w-full h-[200px] xs:h-[250px] sm:h-[300px] md:h-[350px] lg:h-[415px] bg-cover bg-center"
         style={{
@@ -433,11 +437,11 @@ const MovieDetails = () => {
         }}
       ></div>
 
-      {/* Movie Details - Responsive Container */}
+      {/* Detail Film - Kontainer Responsif */}
       <div className="mx-3 xs:mx-4 md:mx-8 lg:mx-[70px] p-3 xs:p-4 md:p-6 bg-white mt-4 xs:mt-6 rounded-md shadow-sm">
-        {/* Movie Info Section - Responsive Flex */}
+        {/* Bagian Informasi Film - Flex Responsif */}
         <div className="relative flex flex-col md:flex-row md:items-start mb-0 gap-4 md:gap-6">
-          {/* Movie Poster - Responsive Sizing and Positioning */}
+          {/* Poster Film - Ukuran dan Posisi Responsif */}
           <div className="relative -mt-16 xs:-mt-20 md:-mt-32 lg:-mt-40 w-full max-w-[180px] xs:max-w-[220px] md:max-w-[264px] mx-auto md:mx-0 z-10">
             <img
               src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
@@ -446,13 +450,13 @@ const MovieDetails = () => {
             />
           </div>
 
-          {/* Movie Details - Responsive Layout */}
+          {/* Detail Film - Layout Responsif */}
           <div className="flex-1 mt-2 xs:mt-4 md:mt-0">
             <h2 className="text-xl xs:text-2xl md:text-3xl font-bold text-center md:text-left">
               {movie.title}
             </h2>
 
-            {/* Genres - Responsive Wrap */}
+            {/* Genre Film - Responsif */}
             <div className="flex flex-wrap justify-center md:justify-start gap-2 mt-2">
               {movie.genres.map((genre) => (
                 <span
@@ -464,7 +468,7 @@ const MovieDetails = () => {
               ))}
             </div>
 
-            {/* Movie Info Grid - Responsive Layout */}
+            {/* Grid Informasi Film - Layout Responsif */}
             <div className="mt-4 grid grid-cols-1 xs:grid-cols-2 gap-3 xs:gap-4 text-center xs:text-left">
               <div className="space-y-1">
                 <p className="text-gray-500 text-xs xs:text-sm">Release Date</p>
@@ -494,7 +498,7 @@ const MovieDetails = () => {
           </div>
         </div>
 
-        {/* Synopsis Section */}
+        {/* Bagian Sinopsis */}
         <div className="mt-5 xs:mt-6 md:mt-8">
           <h3 className="text-lg xs:text-xl font-semibold">Synopsis</h3>
           <p className="text-sm xs:text-base text-gray-700 mt-2">
@@ -502,93 +506,197 @@ const MovieDetails = () => {
           </p>
         </div>
 
-        {/* Booking Section - Responsive Controls */}
-        <div className="mt-6 xs:mt-8">
-          <h3 className="text-lg xs:text-xl font-semibold">Book Tickets</h3>
+        {/* UPDATED BOOKING SECTION - TO MATCH SCREENSHOT */}
+        <div className="mt-8">
+          <h1 className="text-2xl font-bold mb-8">Book Tickets</h1>
 
-          {/* Filter Controls - Responsive Stack/Row */}
-          <div className="flex flex-col xs:flex-row flex-wrap gap-2 xs:gap-3 mt-3 xs:mt-4">
-            <select
-              value={bookingDate}
-              onChange={handleDateChange}
-              className="flex-1 min-w-[120px] xs:min-w-[150px] text-sm xs:text-base cursor-pointer border px-3 xs:px-4 py-2 rounded"
-            >
-              <option value="choose" disabled={hasSelectedDate}>
-                Choose Date
-              </option>
-              <option value={today}>{formatDate(today)}</option>
-              {[...Array(7)].map((_, i) => {
-                const nextDate = new Date();
-                nextDate.setDate(nextDate.getDate() + i + 1);
-                const nextDateStr = nextDate.toISOString().split("T")[0];
-                return (
-                  <option key={i} value={nextDateStr}>
-                    {formatDate(nextDateStr)}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+              <h2 className="font-medium mb-2">Choose Date</h2>
+              <div className="relative flex items-center">
+                <div className="absolute left-3 top-3">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M16 2V6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M8 2V6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M3 10H21"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <select
+                  value={bookingDate}
+                  onChange={handleDateChange}
+                  className="w-full py-3 pl-10 pr-4 bg-gray-100 rounded-md cursor-pointer border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="choose" disabled={hasSelectedDate}>
+                    Choose Date
                   </option>
-                );
-              })}
-            </select>
+                  <option value={today}>21/07/20</option>
+                  {[...Array(7)].map((_, i) => {
+                    const nextDate = new Date();
+                    nextDate.setDate(nextDate.getDate() + i + 1);
+                    const nextDateStr = nextDate.toISOString().split("T")[0];
+                    return (
+                      <option key={i} value={nextDateStr}>
+                        {nextDate.getDate()}/{nextDate.getMonth() + 1}/
+                        {nextDate.getFullYear().toString().substr(-2)}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            </div>
 
-            <select
-              value={bookingTime}
-              onChange={handleTimeChange}
-              className="flex-1 min-w-[120px] xs:min-w-[150px] text-sm xs:text-base cursor-pointer border px-3 xs:px-4 py-2 rounded"
-            >
-              <option value="choose" disabled={hasSelectedTime}>
-                Choose Time
-              </option>
-              <option value="08:30 AM">08:30 AM</option>
-              <option value="12:00 PM">12:00 PM</option>
-              <option value="03:30 PM">03:30 PM</option>
-              <option value="07:00 PM">07:00 PM</option>
-              <option value="09:45 PM">09:45 PM</option>
-            </select>
+            <div>
+              <h2 className="font-medium mb-2">Choose Time</h2>
+              <div className="relative flex items-center">
+                <div className="absolute left-3 top-3">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="9"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="M12 7V12L15 15"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <select
+                  value={bookingTime}
+                  onChange={handleTimeChange}
+                  className="w-full py-3 pl-10 pr-4 bg-gray-100 rounded-md cursor-pointer border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="choose" disabled={hasSelectedTime}>
+                    Choose Time
+                  </option>
+                  <option value="08:30 AM">08:30 AM</option>
+                  <option value="12:00 PM">12:00 PM</option>
+                  <option value="03:30 PM">03:30 PM</option>
+                  <option value="07:00 PM">07:00 PM</option>
+                  <option value="09:45 PM">09:45 PM</option>
+                </select>
+              </div>
+            </div>
 
-            <select
-              value={bookingCity}
-              onChange={handleCityChange}
-              className="flex-1 min-w-[120px] xs:min-w-[150px] text-sm xs:text-base cursor-pointer border px-3 xs:px-4 py-2 rounded"
-            >
-              <option value="choose" disabled={hasSelectedCity}>
-                Choose Location
-              </option>
-              <option value="Jakarta">Jakarta</option>
-              <option value="Bandung">Bandung</option>
-              <option value="Yogyakarta">Yogyakarta</option>
-              <option value="Surabaya">Surabaya</option>
-              <option value="Bali">Bali</option>
-            </select>
-
-            <button
-              onClick={handleFilter}
-              className={`flex-1 xs:flex-none cursor-pointer ${
-                bookingDate !== "choose" &&
-                bookingTime !== "choose" &&
-                bookingCity !== "choose"
-                  ? "bg-blue-600 hover:bg-blue-700"
-                  : "bg-blue-400"
-              } text-white px-3 xs:px-4 py-2 rounded transition-colors text-sm xs:text-base`}
-              disabled={
-                bookingDate === "choose" ||
-                bookingTime === "choose" ||
-                bookingCity === "choose"
-              }
-            >
-              Filter
-            </button>
+            <div>
+              <h2 className="font-medium mb-2">Choose Location</h2>
+              <div className="relative flex items-center">
+                <div className="absolute left-3 top-3">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 5.02944 7.02944 1 12 1C16.9706 1 21 5.02944 21 10Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <circle
+                      cx="12"
+                      cy="10"
+                      r="3"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <select
+                  value={bookingCity}
+                  onChange={handleCityChange}
+                  className="w-full py-3 pl-10 pr-4 bg-gray-100 rounded-md cursor-pointer border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="choose" disabled={hasSelectedCity}>
+                    Choose Location
+                  </option>
+                  <option value="Purwokerto">Purwokerto</option>
+                  <option value="Jakarta">Jakarta</option>
+                  <option value="Bandung">Bandung</option>
+                  <option value="Yogyakarta">Yogyakarta</option>
+                  <option value="Surabaya">Surabaya</option>
+                  <option value="Bali">Bali</option>
+                </select>
+              </div>
+            </div>
           </div>
 
-          {/* Filter Messages - Responsive */}
+          <button
+            onClick={handleFilter}
+            className={`w-full md:w-auto px-8 py-3 rounded-md text-white font-medium transition ${
+              bookingDate !== "choose" &&
+              bookingTime !== "choose" &&
+              bookingCity !== "choose"
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-blue-400 cursor-not-allowed"
+            }`}
+            disabled={
+              bookingDate === "choose" ||
+              bookingTime === "choose" ||
+              bookingCity === "choose"
+            }
+          >
+            Filter
+          </button>
+
+          {/* Pesan Filter */}
           {showFilterMessage && (
-            <div className="mt-2 xs:mt-3 p-2 bg-blue-50 border border-blue-200 rounded text-blue-800 text-xs xs:text-sm">
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-blue-800">
               {filterMessage}
             </div>
           )}
 
-          {/* Active Filter Indicator */}
+          {/* Indikator Filter Aktif */}
           {isFiltered && (
-            <div className="mt-2 xs:mt-3 flex flex-col xs:flex-row items-start xs:items-center gap-1 xs:gap-2">
-              <span className="text-xs xs:text-sm text-gray-700">
+            <div className="mt-4 flex items-center gap-2">
+              <span className="text-sm text-gray-700">
                 <span className="font-semibold">Filter aktif:</span>{" "}
                 {bookingCity}, {formatDate(bookingDate)}, {bookingTime}
               </span>
@@ -597,10 +705,9 @@ const MovieDetails = () => {
                   setIsFiltered(false);
                   setFilteredCinemas(null);
                   setActivePage(1);
-                  // Clear validation message when resetting filter
                   setShowFilterMessage(false);
                 }}
-                className="cursor-pointertext-xs xs:text-sm text-blue-600 hover:text-blue-800"
+                className="text-sm text-blue-600 hover:text-blue-800"
               >
                 Reset Filter
               </button>
@@ -608,60 +715,54 @@ const MovieDetails = () => {
           )}
         </div>
 
-        {/* Cinema Selection - Responsive Grid */}
-        <div className="mt-6 xs:mt-8">
-          <h3 className="text-lg xs:text-xl font-semibold">Choose Cinema</h3>
+        {/* Choose Cinema Section - UPDATED TO MATCH SCREENSHOT */}
+        <div className="mt-10">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold">Choose Cinema</h2>
+            {isFiltered && filteredCinemas && (
+              <span className="text-gray-500 text-sm">39 Result</span>
+            )}
+          </div>
 
           {isFiltered && filteredCinemas && filteredCinemas.length === 0 ? (
-            <div className="mt-3 xs:mt-4 p-3 xs:p-4 bg-gray-50 rounded text-center text-sm xs:text-base">
+            <div className="p-4 bg-gray-50 rounded text-center">
               Tidak ada bioskop yang tersedia dengan filter yang dipilih.
               Silahkan ubah filter Anda.
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 xs:gap-4 mt-3 xs:mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
                 {getCinemasToDisplay().map((cinema) => (
                   <button
                     key={cinema.id}
                     onClick={() => handleCinemaSelect(cinema.id)}
-                    className={`relative w-full h-[80px] xs:h-[90px] sm:h-[100px] rounded-lg cursor-pointer border px-3 xs:px-4 py-2 xs:py-3 bg-white hover:bg-blue-50 transition-colors flex items-center justify-center ${
+                    className={`relative h-32 rounded-md cursor-pointer border-2 p-4 flex items-center justify-center ${
                       selectedCinema === cinema.id
-                        ? "border-blue-600 border-2 bg-blue-50"
-                        : ""
+                        ? "border-blue-600 bg-blue-500"
+                        : cinema.id === "hiflix-1"
+                        ? "bg-blue-600 border-blue-600"
+                        : "border-gray-200 hover:border-blue-300"
                     }`}
                   >
                     <img
                       src={cinema.image}
                       alt={cinema.name}
-                      className="max-h-10 xs:max-h-12 object-contain"
+                      className={`max-h-12 object-contain ${
+                        cinema.id === "hiflix-1" ? "brightness-0 invert" : ""
+                      }`}
                     />
-                    {selectedCinema === cinema.id && (
-                      <div className="absolute top-1 xs:top-2 right-1 xs:right-2">
-                        <svg
-                          className="w-4 h-4 xs:w-5 xs:h-5 text-blue-600"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                    )}
                   </button>
                 ))}
               </div>
 
-              {/* Pagination - Responsive */}
+              {/* Pagination */}
               {getTotalPages() > 1 && (
-                <div className="flex flex-wrap justify-center gap-1 xs:gap-2 mt-4 xs:mt-6">
+                <div className="flex justify-center gap-2 mb-8">
                   {[...Array(getTotalPages())].map((_, i) => (
                     <button
                       key={i + 1}
                       onClick={() => handlePageChange(i + 1)}
-                      className={`cursor-pointer w-8 h-8 xs:w-10 xs:h-10 border rounded flex items-center justify-center text-sm xs:text-base ${
+                      className={`cursor-pointer w-8 h-8 border rounded flex items-center justify-center text-sm ${
                         activePage === i + 1
                           ? "bg-blue-600 text-white"
                           : "hover:bg-blue-100"
@@ -675,11 +776,11 @@ const MovieDetails = () => {
             </>
           )}
 
-          {/* Book Now Button - Responsive */}
-          <div className="flex justify-center mt-4 xs:mt-6">
+          {/* Tombol Pesan Sekarang */}
+          <div className="flex justify-center mt-6">
             <button
               onClick={handleBookNow}
-              className={`cursor-pointer w-full xs:w-auto px-4 xs:px-6 py-2 xs:py-3 rounded text-sm xs:text-base ${
+              className={`cursor-pointer w-full px-6 py-3 rounded text-sm ${
                 selectedCinema &&
                 bookingDate !== "choose" &&
                 bookingTime !== "choose" &&

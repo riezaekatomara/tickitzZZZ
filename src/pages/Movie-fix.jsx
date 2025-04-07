@@ -15,41 +15,18 @@ function MovieTicketing() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const MOVIES_PER_PAGE = 12;
-  const MAX_TOTAL_MOVIES = 500;
+  const MAX_TOTAL_MOVIES = 500; // Jumlah ditingkatkan untuk filter yang lebih baik
 
   const API_KEY = "6269e9b68e0c503c6621dfd9e2c6da29";
   const BASE_URL = "https://api.themoviedb.org/3";
   const POPULAR_MOVIES_URL = `${BASE_URL}/movie/popular?language=en-US&page=${activePage}&api_key=${API_KEY}`;
   const GENRE_LIST_URL = `${BASE_URL}/genre/movie/list?language=en-US&api_key=${API_KEY}`;
 
-  // Fungsi untuk menangani navigasi ke detail film
-  const navigateToDetails = (movie, event) => {
-    event.preventDefault();
-    const movieGenres = movie.genre_ids.map((id) => genres[id] || "Unknown");
-
-    navigate(`/movie-details/${movie.id}`, {
-      state: {
-        movieId: movie.id,
-        movieTitle: movie.title,
-        moviePoster: movie.poster_path,
-        movieGenres: movieGenres,
-        movieOverview: movie.overview,
-        movieReleaseDate: movie.release_date,
-        movieRuntime: movie.runtime,
-        movieBackdrop: movie.backdrop_path,
-      },
-      replace: true, // Menambahkan opsi replace untuk menghindari masalah history
-    });
-
-    // Scroll ke atas setelah navigasi
-    window.scrollTo(0, 0);
-  };
-
   // Fungsi untuk menangani klik tombol "Buy Ticket"
-  const handleBuyTicket = (movie, event) => {
-    event?.preventDefault();
+  const handleBuyTicket = (movie) => {
     const movieGenres = movie.genre_ids.map((id) => genres[id] || "Unknown");
 
+    // Navigasi ke halaman pemesanan kursi dengan data film
     navigate(`/movie-details/${movie.id}`, {
       state: {
         movieId: movie.id,
@@ -61,11 +38,7 @@ function MovieTicketing() {
         movieRuntime: movie.runtime,
         movieBackdrop: movie.backdrop_path,
       },
-      replace: true, // Menambahkan opsi replace untuk menghindari masalah history
     });
-
-    // Scroll ke atas setelah navigasi
-    window.scrollTo(0, 0);
   };
 
   // Mengambil daftar genre
@@ -103,6 +76,7 @@ function MovieTicketing() {
         let page = 1;
         let totalPages = 1;
 
+        // Mengambil beberapa halaman untuk mendapatkan cukup banyak film untuk filter
         while (allFetchedMovies.length < MAX_TOTAL_MOVIES && page <= 5) {
           const response = await fetch(
             `${BASE_URL}/movie/popular?language=en-US&page=${page}&api_key=${API_KEY}`
@@ -130,6 +104,7 @@ function MovieTicketing() {
   useEffect(() => {
     if (allMovies.length === 0) return;
 
+    // Pertama filter berdasarkan genre
     let filtered = [];
     if (activeGenre === "All") {
       filtered = allMovies;
@@ -141,19 +116,28 @@ function MovieTicketing() {
       );
     }
 
+    // Kemudian filter berdasarkan kata kunci pencarian
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter((movie) => {
+        // Pencarian berdasarkan judul film
         const titleMatch = movie.title.toLowerCase().includes(query);
+
+        // Pencarian berdasarkan genre
         const genreMatch = movie.genre_ids.some((id) =>
           genres[id]?.toLowerCase().includes(query)
         );
+
         return titleMatch || genreMatch;
       });
     }
 
     setFilteredMovies(filtered);
+
+    // Memperbarui total halaman berdasarkan hasil filter
     setTotalPages(Math.ceil(filtered.length / MOVIES_PER_PAGE));
+
+    // Reset ke halaman pertama jika halaman saat ini tidak valid dengan filter baru
     if (activePage > Math.ceil(filtered.length / MOVIES_PER_PAGE)) {
       setActivePage(1);
     }
@@ -161,6 +145,7 @@ function MovieTicketing() {
 
   // Memperbarui tampilan film saat halaman berubah atau filtered movies berubah
   useEffect(() => {
+    // Selalu menampilkan 12 film per halaman (grid 3x4)
     const startIdx = (activePage - 1) * MOVIES_PER_PAGE;
     const endIdx = startIdx + MOVIES_PER_PAGE;
     setDisplayedMovies(filteredMovies.slice(startIdx, endIdx));
@@ -168,12 +153,12 @@ function MovieTicketing() {
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
-    setActivePage(1);
+    setActivePage(1); // Reset ke halaman pertama saat pencarian
   };
 
   const handleGenreClick = (genre) => {
     setActiveGenre(genre);
-    setActivePage(1);
+    setActivePage(1); // Reset ke halaman pertama saat mengubah genre
     window.scrollTo(0, 0);
   };
 
@@ -198,6 +183,7 @@ function MovieTicketing() {
 
   const getPageNumbers = () => {
     let maxVisiblePages = 5;
+    // Mengurangi jumlah halaman yang terlihat pada layar kecil
     if (window.innerWidth < 640) {
       maxVisiblePages = 3;
     }
@@ -229,7 +215,7 @@ function MovieTicketing() {
   return (
     <>
       <main className="overflow-x-hidden">
-        {/* Bagian Hero */}
+        {/* Bagian Hero - Path gambar latar belakang tetap dengan fallback */}
         <div className="relative w-full h-[250px] xs:h-[300px] sm:h-[462px] overflow-hidden">
           <div className="absolute inset-0">
             <img
@@ -262,7 +248,7 @@ function MovieTicketing() {
           </div>
         </div>
 
-        {/* Bagian Pencarian dan Filter */}
+        {/* Bagian Pencarian dan Filter - Tata letak responsif yang ditingkatkan */}
         <section className="flex flex-col md:flex-row justify-between items-start md:items-center px-4 sm:px-6 md:px-8 py-5 space-y-6 md:space-y-0">
           <div className="flex flex-col w-full md:w-1/2 lg:w-2/5">
             <div className="relative">
@@ -309,7 +295,7 @@ function MovieTicketing() {
           </div>
         </section>
 
-        {/* Bagian Grid Film */}
+        {/* Bagian Grid Film - Dengan ukuran gambar yang konsisten */}
         <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 px-4 sm:px-6 md:px-8 py-6 sm:py-10">
           {isLoading ? (
             <div className="col-span-full text-center py-10">
@@ -323,6 +309,7 @@ function MovieTicketing() {
                 className="group w-full bg-white shadow-lg rounded-[6px] overflow-hidden text-center transition-transform duration-300 hover:scale-[1.02]"
               >
                 <div className="relative w-full pb-[150%]">
+                  {/* Menggunakan trik padding-bottom untuk rasio aspek yang konsisten */}
                   <img
                     src={
                       movie.poster_path
@@ -336,7 +323,6 @@ function MovieTicketing() {
                   <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <Link
                       to={`/movie-details/${movie.id}`}
-                      onClick={(e) => navigateToDetails(movie, e)}
                       state={{
                         movieId: movie.id,
                         movieTitle: movie.title,
@@ -354,8 +340,9 @@ function MovieTicketing() {
                         Details
                       </button>
                     </Link>
+                    {/* Dimodifikasi untuk memanggil fungsi handleBuyTicket */}
                     <button
-                      onClick={(e) => handleBuyTicket(movie, e)}
+                      onClick={() => handleBuyTicket(movie)}
                       className="cursor-pointer px-3 py-1 sm:px-4 sm:py-2 bg-blue-700 text-white rounded w-[120px] sm:w-[150px] text-sm sm:text-base hover:bg-blue-800 transition-colors duration-300"
                     >
                       Buy Ticket

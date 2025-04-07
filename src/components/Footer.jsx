@@ -13,9 +13,9 @@ function Footer() {
   return (
     <footer className="bg-white py-8 md:px-0 md:py-12 border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main Footer Content */}
+        {/* Konten Utama Footer */}
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4">
-          {/* Logo and Description */}
+          {/* Logo dan Deskripsi */}
           <div className="flex flex-col items-start">
             <img
               src={Logo}
@@ -28,7 +28,7 @@ function Footer() {
             </p>
           </div>
 
-          {/* Explore Links */}
+          {/* Bagian Link Explore */}
           <div className="flex flex-col items-start md:items-center lg:items-center">
             <h3 className="sm:relative sm:right-3 md:relative md:right-3 lg:relative lg:right-3 mb-4 font-semibold text-lg">
               Explore
@@ -49,7 +49,7 @@ function Footer() {
             </ul>
           </div>
 
-          {/* Sponsors */}
+          {/* Bagian Sponsor */}
           <div className="flex flex-col items-start md:items-center lg:items-center">
             <h3 className="sm:relative sm:right-6 md:relative md:right-6 lg:relative lg:right-6 mb-4 font-semibold text-lg">
               Our Sponsor
@@ -67,7 +67,7 @@ function Footer() {
             </div>
           </div>
 
-          {/* Social Media */}
+          {/* Bagian Media Sosial */}
           <div className="flex flex-col items-start md:items-end lg:items-end lg:pr-2">
             <h3 className="sm:relative sm:right-19 md:relative md:right-19 lg:relative lg:right-19 mb-4 font-semibold text-lg">
               Follow us
@@ -101,7 +101,7 @@ function Footer() {
           </div>
         </div>
 
-        {/* Copyright Section */}
+        {/* Bagian Copyright */}
         <div className="mt-8 sm:mt-12 text-left sm:text-left md:text-center lg:text-center text-sm text-gray-500 border-t border-gray-200 pt-6 sm:pt-8">
           © 2020 Tickitz. All Rights Reserved.
         </div>

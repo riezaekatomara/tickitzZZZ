@@ -8,7 +8,7 @@ const SeatOrder = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Default data jika location.state tidak ada
+  // Data default yang digunakan jika tidak ada data dari location.state
   const defaultBookingData = {
     movieId: "",
     movieTitle: "Movie not selected",
@@ -23,16 +23,16 @@ const SeatOrder = () => {
     cinemaImage: "",
   };
 
-  // Mengambil data booking dari location state atau menggunakan default
+  // Mengambil data booking dari location state atau menggunakan data default jika tidak ada
   const bookingData = location.state || defaultBookingData;
 
-  // State untuk kursi
+  // State untuk menyimpan data kursi
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [soldSeats, setSoldSeats] = useState([]);
   const [totalPayment, setTotalPayment] = useState(0);
   const ticketPrice = 10;
 
-  // Data kursi love nest (pasangan, 2 kursi bersebelahan)
+  // Data kursi love nest (kursi untuk pasangan, 2 kursi bersebelahan)
   const loveNestPairs = [
     ["F9", "F10"],
     ["C1", "C2"],
@@ -40,7 +40,7 @@ const SeatOrder = () => {
     ["G10", "G11"],
   ];
 
-  // Flatten loveNestPairs untuk mempermudah pengecekan
+  // Ubah array loveNestPairs menjadi array datar untuk mempermudah pengecekan
   const loveNestSeats = loveNestPairs.flat();
 
   // Fungsi untuk menangani pemilihan kursi
@@ -52,12 +52,12 @@ const SeatOrder = () => {
     }
 
     if (selectedSeats.includes(seatId)) {
-      // Menghapus kursi dari pilihan
+      // Menghapus kursi dari pilihan jika sudah dipilih sebelumnya
       const updatedSeats = selectedSeats.filter((seat) => seat !== seatId);
       setSelectedSeats(updatedSeats);
       setTotalPayment(updatedSeats.length * ticketPrice);
     } else {
-      // Menambah kursi ke pilihan
+      // Menambah kursi ke pilihan jika belum dipilih
       const updatedSeats = [...selectedSeats, seatId];
       setSelectedSeats(updatedSeats);
       setTotalPayment(updatedSeats.length * ticketPrice);
@@ -79,7 +79,7 @@ const SeatOrder = () => {
     });
   };
 
-  // Fungsi untuk mengecek status kursi
+  // Fungsi untuk mengecek status kursi (tersedia, terpilih, terjual, atau love nest)
   const getSeatStatus = (row, col) => {
     const seatId = `${row}${col}`;
 
@@ -104,13 +104,13 @@ const SeatOrder = () => {
     return soldSeats.includes(seatId);
   };
 
-  // Fungsi untuk mengecek apakah kursi adalah love nest
+  // Fungsi untuk mengecek apakah kursi termasuk kategori love nest
   const isLoveNest = (row, col) => {
     const seatId = `${row}${col}`;
     return loveNestSeats.includes(seatId);
   };
 
-  // Handle checkout (ketika user menekan tombol checkout)
+  // Fungsi untuk menangani proses checkout
   const handleCheckout = () => {
     // Pindahkan semua kursi yang dipilih ke soldSeats
     setSoldSeats([...soldSeats, ...selectedSeats]);
@@ -120,18 +120,18 @@ const SeatOrder = () => {
     // Di sini bisa ditambahkan navigasi ke halaman pembayaran
   };
 
-  // Handle kembali ke halaman movie ticketing jika tidak ada data
+  // Fungsi untuk kembali ke halaman pemilihan film
   const handleChangeMovie = () => {
     navigate("/movie-ticketing");
   };
 
-  // Membuat grid kursi
+  // Fungsi untuk membuat tampilan grid kursi
   const renderSeats = () => {
     const rows = ["A", "B", "C", "D", "E", "F", "G"];
     const leftCols = [1, 2, 3, 4, 5, 6, 7];
     const rightCols = [8, 9, 10, 11, 12, 13, 14];
 
-    // Menentukan ukuran kursi berdasarkan lebar layar
+    // Menentukan ukuran kursi berdasarkan lebar layar (responsif)
     const seatSizeClass = "h-5 w-5 sm:h-6 sm:w-6";
     const gapClass = "gap-1 sm:gap-2";
 
@@ -242,7 +242,7 @@ const SeatOrder = () => {
 
       <main className="flex-grow bg-white py-4 sm:py-8">
         <div className="container mx-auto px-4 pt-16 sm:pt-24 mb-6 sm:mb-10">
-          {/* Progress steps - lebih responsif */}
+          {/* Indikator tahapan pemesanan - responsif */}
           <div className="mb-6 sm:mb-10 flex justify-center">
             <div className="flex items-center max-w-full overflow-x-auto">
               <div className="flex flex-col items-center">
@@ -278,7 +278,7 @@ const SeatOrder = () => {
             </div>
           </div>
 
-          {/* Informasi Movie Details */}
+          {/* Bagian informasi detail film */}
           <div className="flex flex-col gap-4 sm:gap-6 lg:flex-row">
             <div className="flex-grow rounded-lg bg-white p-4 sm:p-6 shadow-sm">
               <div className="mb-4 sm:mb-6 border-b pb-4">
@@ -376,7 +376,7 @@ const SeatOrder = () => {
               </div>
             </div>
 
-            {/* Kupon Seat */}
+            {/* Bagian tiket dan ringkasan pembelian */}
             <div className="relative w-full rounded-lg bg-white p-4 sm:p-6 shadow-sm lg:w-80">
               <div className="mb-4 sm:mb-6 text-center">
                 {bookingData.cinemaImage ? (

@@ -5,13 +5,16 @@ import { Link } from "react-router";
 import "../styles/button-animations.css";
 
 function Header() {
+  // State untuk mengontrol visibilitas navigasi mobile
   const [isNavVisible, setIsNavVisible] = useState(false);
 
+  // Fungsi untuk toggle menu navigasi pada tampilan mobile
   const toggleNav = () => {
     setIsNavVisible(!isNavVisible);
   };
 
   return (
+    // Header dengan posisi sticky dan bayangan
     <header
       className="sticky top-0 z-50 bg-white shadow-md w-screen left-0 right-0"
       style={{ margin: 0, width: "100vw", position: "fixed" }}
@@ -21,7 +24,7 @@ function Header() {
         style={{ maxWidth: "100%" }}
       >
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
+          {/* Bagian Logo */}
           <div className="flex items-center">
             <Link to="/">
               <img
@@ -32,7 +35,7 @@ function Header() {
             </Link>
           </div>
 
-          {/* Hamburger Icon (Mobile) */}
+          {/* Ikon Menu Hamburger (Tampilan Mobile) */}
           <div
             className="md:hidden cursor-pointer bounce-on-hover"
             onClick={toggleNav}
@@ -40,7 +43,7 @@ function Header() {
             <img src={MenuIcon} alt="Menu" className="h-8 w-8" />
           </div>
 
-          {/* Center Navigation - Desktop */}
+          {/* Navigasi Tengah - Tampilan Desktop */}
           <nav className="hidden md:flex items-center justify-center flex-1">
             <div className="flex space-x-4 md:space-x-6 lg:space-x-8">
               <Link
@@ -64,7 +67,7 @@ function Header() {
             </div>
           </nav>
 
-          {/* Auth Buttons - Desktop */}
+          {/* Tombol Autentikasi - Tampilan Desktop */}
           <div className="hidden md:flex items-center space-x-2 sm:space-x-4">
             <Link to="/login">
               <button className="text-primary hover:bg-primary hover:text-white px-3 sm:px-4 py-1 sm:py-2 border border-primary rounded transition-colors duration-200 cursor-pointer text-sm sm:text-base shine-on-hover">
@@ -79,7 +82,7 @@ function Header() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Navigasi Mobile - Muncul saat tombol hamburger diklik */}
         <nav
           className={`${
             isNavVisible ? "flex" : "hidden"
@@ -107,6 +110,7 @@ function Header() {
             Buy Ticket
           </Link>
 
+          {/* Tombol Autentikasi - Tampilan Mobile */}
           <div className="flex flex-col space-y-3 pt-4 border-t">
             <Link to="/login" onClick={toggleNav}>
               <button className="w-full text-primary hover:bg-primary hover:text-white px-4 py-2 border border-primary rounded transition-colors duration-200 cursor-pointer shine-on-hover">

@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { selectMovie } from "../redux/slices/orderSlice.js";
 import centangS from "../assets/svg/centang-s.svg";
 import centang from "../assets/svg/centang-group.svg";
 import message from "../assets/svg/message-group.svg";
@@ -9,6 +11,8 @@ import "../styles/button-animations.css";
 
 const Home = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const orderState = useSelector((state) => state.order);
   const API_KEY = "6269e9b68e0c503c6621dfd9e2c6da29";
   const BASE_URL = "https://api.themoviedb.org/3";
   const POPULAR_MOVIES_URL = `${BASE_URL}/movie/popular?language=en-US&page=1&api_key=${API_KEY}`;
@@ -20,6 +24,53 @@ const Home = () => {
   const [genres, setGenres] = useState({});
   const upcomingMoviesRef = useRef(null);
 
+  // Fungsi untuk menyimpan movie ke Redux dan navigasi
+  const handleMovieSelection = (movie) => {
+    const movieGenres = movie.genre_ids.map((id) => genres[id] || "Unknown");
+
+    dispatch(
+      selectMovie({
+        id: movie.id,
+        title: movie.title,
+        poster: movie.poster_path,
+        backdrop: movie.backdrop_path,
+        genres: movieGenres,
+        overview: movie.overview,
+        releaseDate: movie.release_date,
+      })
+    );
+
+    return {
+      movieId: movie.id,
+      movieTitle: movie.title,
+      moviePoster: movie.poster_path,
+      movieBackdrop: movie.backdrop_path,
+      movieGenres: movieGenres,
+      movieOverview: movie.overview,
+      movieReleaseDate: movie.release_date,
+    };
+  };
+
+  // Fungsi untuk navigasi ke detail film
+  const handleMovieDetails = (movie) => {
+    const state = handleMovieSelection(movie);
+    navigate(`/movie-details/${movie.id}`, { state });
+  };
+
+  // Fungsi untuk scroll carousel
+  const scrollLeft = () => {
+    if (upcomingMoviesRef.current) {
+      upcomingMoviesRef.current.scrollBy({ left: -300, behavior: "smooth" });
+    }
+  };
+
+  const scrollRight = () => {
+    if (upcomingMoviesRef.current) {
+      upcomingMoviesRef.current.scrollBy({ left: 300, behavior: "smooth" });
+    }
+  };
+
+  // Mengambil data genre dan film
   useEffect(() => {
     const fetchGenres = async () => {
       try {
@@ -53,34 +104,6 @@ const Home = () => {
     fetchMovies();
   }, []);
 
-  const scrollLeft = () => {
-    if (upcomingMoviesRef.current) {
-      upcomingMoviesRef.current.scrollBy({ left: -300, behavior: "smooth" });
-    }
-  };
-
-  const scrollRight = () => {
-    if (upcomingMoviesRef.current) {
-      upcomingMoviesRef.current.scrollBy({ left: 300, behavior: "smooth" });
-    }
-  };
-
-  const handleMovieDetails = (movie) => {
-    const movieGenres = movie.genre_ids.map((id) => genres[id] || "Unknown");
-
-    navigate(`/movie-details/${movie.id}`, {
-      state: {
-        movieId: movie.id,
-        movieTitle: movie.title,
-        moviePoster: movie.poster_path,
-        movieBackdrop: movie.backdrop_path,
-        movieGenres: movieGenres,
-        movieOverview: movie.overview,
-        movieReleaseDate: movie.release_date,
-      },
-    });
-  };
-
   return (
     <div className="bg-white min-h-screen flex flex-col">
       <Header />
@@ -103,17 +126,15 @@ const Home = () => {
           {popularMovies.slice(4, 8).map((movie, index) => (
             <div
               key={movie.id}
-              className={`overflow-hidden
-                ${
-                  index === 0 || index === 1
-                    ? "rounded-t-[20px]"
-                    : "rounded-b-[20px]"
-                }
-                ${
-                  index === 2
-                    ? "relative bottom-20 md:bottom-8 transform md:-translate-y-12"
-                    : ""
-                }`}
+              className={`overflow-hidden ${
+                index === 0 || index === 1
+                  ? "rounded-t-[20px]"
+                  : "rounded-b-[20px]"
+              } ${
+                index === 2
+                  ? "relative bottom-20 md:bottom-8 transform md:-translate-y-12"
+                  : ""
+              }`}
               style={{
                 height: index === 1 || index === 2 ? "250px" : "170px",
               }}
@@ -128,7 +149,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Why Choose Us */}
+      {/* Why Choose Us Section */}
       <section className="w-full pb-12 px-4 md:px-8 mx-auto">
         <div className="text-center md:text-left md:pl-4">
           <h2 className="text-primary text-sm font-semibold tracking-wider mb-2">
@@ -148,8 +169,7 @@ const Home = () => {
             />
             <h4 className="text-xl font-bold mb-4">Guaranteed</h4>
             <p className="text-gray-600">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
-              finibus, libero ut sagittis a, lorem ipsum es onsectetur.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             </p>
           </div>
           <div className="text-center">
@@ -160,8 +180,7 @@ const Home = () => {
             />
             <h4 className="text-xl font-bold mb-4">Affordable</h4>
             <p className="text-gray-600">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
-              finibus, libero ut sagittis a, lorem ipsum es onsectetur.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             </p>
           </div>
           <div className="text-center">
@@ -172,14 +191,13 @@ const Home = () => {
             />
             <h4 className="text-xl font-bold mb-4">24/7 Customer Support</h4>
             <p className="text-gray-600">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
-              finibus, libero ut sagittis a, lorem ipsum es onsectetur.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Movies Section */}
+      {/* Popular Movies Section */}
       <section className="w-full py-12 px-4 md:px-8 mx-auto">
         <h2 className="text-2xl font-bold text-center md:text-left mb-8">
           Exciting Movies That Should Be Watched Today
@@ -199,7 +217,7 @@ const Home = () => {
                   alt={movie.title}
                   className="absolute top-0 left-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
                   <button
                     onClick={() => handleMovieDetails(movie)}
                     className="cursor-pointer mb-4 px-4 py-2 bg-transparent text-white border border-white rounded w-32 hover:bg-white hover:text-black transition-colors duration-300 scale-rotate-on-hover"
@@ -232,6 +250,7 @@ const Home = () => {
         </div>
       </section>
 
+      {/* View All Button */}
       <div className="flex justify-center my-8">
         <button
           onClick={() => navigate("/movie")}
@@ -242,7 +261,7 @@ const Home = () => {
         </button>
       </div>
 
-      {/* Upcoming Movies */}
+      {/* Upcoming Movies Section */}
       <section className="w-full py-12 px-4 md:px-8 mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8">
           <div className="text-center sm:text-left mb-4 sm:mb-0">
@@ -269,13 +288,13 @@ const Home = () => {
 
         <div
           ref={upcomingMoviesRef}
-          className="flex overflow-x-auto scroll-smooth snap-x snap-mandatory gap-4 pb-4 hide-scrollbar"
+          className="flex overflow-x-auto scroll-smooth snap-x snap-mandatory gap-6 pb-4 hide-scrollbar"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {upcomingMovies.map((movie) => (
             <div
               key={movie.id}
-              className="snap-start flex-shrink-0 w-64 md:w-72 bg-white shadow-lg rounded-lg overflow-hidden group"
+              className="snap-start flex-shrink-0 w-64 md:w-58.5 bg-white shadow-lg rounded-lg overflow-hidden group"
             >
               <div
                 className="relative w-full"
