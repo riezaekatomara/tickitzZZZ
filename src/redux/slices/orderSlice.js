@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+// State awal untuk order slice
 const initialState = {
   selectedMovie: {
     id: null,
@@ -28,11 +29,12 @@ const initialState = {
   error: null,
 };
 
+// Membuat slice dengan createSlice dari Redux Toolkit
 const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    // Action to select a movie
+    // Action untuk memilih film
     selectMovie: (state, action) => {
       state.selectedMovie = {
         id: action.payload.id,
@@ -44,7 +46,7 @@ const orderSlice = createSlice({
         releaseDate: action.payload.releaseDate,
         runtime: action.payload.runtime || null,
       };
-      // Reset all related selections when movie changes
+      // Mengatur ulang semua pilihan terkait ketika film berubah
       state.selectedDate = null;
       state.selectedTime = null;
       state.selectedCity = null;
@@ -55,57 +57,63 @@ const orderSlice = createSlice({
       state.paymentMethod = null;
     },
 
-    // Action to select a date
+    // Action untuk memilih tanggal
     selectDate: (state, action) => {
       state.selectedDate = action.payload;
-      // Reset time and seats when date changes
+      // Mengatur ulang waktu dan kursi ketika tanggal berubah
       state.selectedTime = null;
       state.selectedSeats = [];
       state.totalPrice = 0;
     },
 
-    // Action to select a time
+    // Action untuk memilih waktu
     selectTime: (state, action) => {
       state.selectedTime = action.payload;
-      // Reset seats when time changes
+      // Mengatur ulang kursi ketika waktu berubah
       state.selectedSeats = [];
       state.totalPrice = 0;
     },
 
-    // Action to select a city
+    // Action untuk memilih kota
     selectCity: (state, action) => {
       state.selectedCity = action.payload;
-      // Reset cinema and seats when city changes
+      // Mengatur ulang bioskop dan kursi ketika kota berubah
       state.selectedCinema = { id: null, name: null, image: null };
       state.selectedSeats = [];
       state.totalPrice = 0;
     },
 
-    // Action to select a cinema
+    // Action untuk memilih bioskop
     selectCinema: (state, action) => {
       state.selectedCinema = {
         id: action.payload.id,
         name: action.payload.name,
         image: action.payload.image,
       };
-      // Reset seats when cinema changes
+      // Mengatur ulang kursi ketika bioskop berubah
       state.selectedSeats = [];
       state.totalPrice = 0;
     },
 
-    // Action to select seats
+    // Action untuk memilih kursi
     selectSeats: (state, action) => {
       state.selectedSeats = action.payload.seats;
       state.ticketPrice = action.payload.price;
       state.totalPrice = action.payload.seats.length * action.payload.price;
     },
 
-    // Action to select payment method
+    // Action untuk menghapus kursi yang dipilih
+    clearSeats: (state) => {
+      state.selectedSeats = [];
+      state.totalPrice = 0;
+    },
+
+    // Action untuk memilih metode pembayaran
     selectPaymentMethod: (state, action) => {
       state.paymentMethod = action.payload;
     },
 
-    // Action to complete an order
+    // Action untuk menyelesaikan pesanan
     completeOrder: (state) => {
       if (
         state.selectedMovie.id &&
@@ -132,7 +140,7 @@ const orderSlice = createSlice({
 
         state.orderHistory.push(newOrder);
 
-        // Reset state after order completion but keep history
+        // Mengatur ulang state setelah pesanan selesai tetapi tetap menyimpan riwayat
         Object.assign(state, {
           ...initialState,
           orderHistory: state.orderHistory,
@@ -140,7 +148,7 @@ const orderSlice = createSlice({
       }
     },
 
-    // Action to reset order state
+    // Action untuk mengatur ulang state pesanan
     resetOrder: (state) => {
       Object.assign(state, {
         ...initialState,
@@ -148,22 +156,22 @@ const orderSlice = createSlice({
       });
     },
 
-    // Action to set loading state
+    // Action untuk mengatur status loading
     setLoading: (state, action) => {
       state.isLoading = action.payload;
     },
 
-    // Action for error handling
+    // Action untuk menangani error
     setError: (state, action) => {
       state.error = action.payload;
     },
 
-    // Action to clear error
+    // Action untuk menghapus error
     clearError: (state) => {
       state.error = null;
     },
 
-    // Action to update ticket price
+    // Action untuk memperbarui harga tiket
     updateTicketPrice: (state, action) => {
       state.ticketPrice = action.payload;
       if (state.selectedSeats.length > 0) {
@@ -173,7 +181,7 @@ const orderSlice = createSlice({
   },
 });
 
-// Export actions
+// Ekspor semua action
 export const {
   selectMovie,
   selectDate,
@@ -181,14 +189,17 @@ export const {
   selectCity,
   selectCinema,
   selectSeats,
+  clearSeats,
   selectPaymentMethod,
   completeOrder,
   resetOrder,
   setLoading,
   setError,
+  clearError,
+  updateTicketPrice,
 } = orderSlice.actions;
 
-// Selectors
+// Selector untuk mengakses state
 export const selectSelectedMovie = (state) => state.order.selectedMovie;
 export const selectSelectedDate = (state) => state.order.selectedDate;
 export const selectSelectedTime = (state) => state.order.selectedTime;
@@ -202,5 +213,5 @@ export const selectOrderHistory = (state) => state.order.orderHistory;
 export const selectOrderLoading = (state) => state.order.isLoading;
 export const selectOrderError = (state) => state.order.error;
 
-// Export reducer
+// Ekspor reducer
 export default orderSlice.reducer;

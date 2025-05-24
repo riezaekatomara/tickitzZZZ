@@ -7,9 +7,9 @@ import {
   selectTime,
   selectCity,
   selectCinema,
-} from "../redux/slices/orderSlice.js";
-import Header from "../components/Header.jsx";
-import Footer from "../components/Footer.jsx";
+} from "../../redux/slices/orderSlice.js";
+import Header from "../../components/Header.jsx";
+import Footer from "../../components/Footer.jsx";
 import Ebv from "../assets/svg/ebv.svg";
 import Hiflix from "../assets/svg/hiflix.svg";
 import Cine from "../assets/svg/cine.svg";
@@ -21,14 +21,14 @@ const MovieDetails = () => {
   const dispatch = useDispatch();
   const orderState = useSelector((state) => state.order);
 
-  // Initialize state from Redux where available
+  // Inisialisasi state dari Redux
   const [movie, setMovie] = useState(orderState.selectedMovie);
   const [loading, setLoading] = useState(true);
   const [cast, setCast] = useState([]);
   const [director, setDirector] = useState("");
   const [genres, setGenres] = useState({});
 
-  // Booking state initialized from Redux
+  // State pemesanan dari Redux
   const [bookingDate, setBookingDate] = useState(
     orderState.selectedDate || "choose"
   );
@@ -42,12 +42,11 @@ const MovieDetails = () => {
     orderState.selectedCinema?.id || ""
   );
 
+  // State untuk tampilan UI
   const [activePage, setActivePage] = useState(1);
   const [hasSelectedTime, setHasSelectedTime] = useState(false);
   const [hasSelectedCity, setHasSelectedCity] = useState(false);
   const [hasSelectedDate, setHasSelectedDate] = useState(false);
-
-  // Filter related state
   const [filteredCinemas, setFilteredCinemas] = useState(null);
   const [isFiltered, setIsFiltered] = useState(false);
   const [showFilterMessage, setShowFilterMessage] = useState(false);
@@ -56,7 +55,7 @@ const MovieDetails = () => {
   const API_KEY = "6269e9b68e0c503c6621dfd9e2c6da29";
   const BASE_URL = "https://api.themoviedb.org/3";
 
-  // Cinema data
+  // Data bioskop
   const cinemasByPage = {
     1: [
       { id: "ebv-1", name: "EBV.id", image: Ebv },
@@ -89,8 +88,8 @@ const MovieDetails = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    // If state is passed from navigation, use that
     if (location.state) {
+      // Mengambil data dari state navigasi jika tersedia
       const state = location.state;
       const movieData = {
         id: state.movieId,
@@ -106,7 +105,7 @@ const MovieDetails = () => {
       dispatch(selectMovie(movieData));
       setLoading(false);
     } else {
-      // Otherwise fetch from API
+      // Fetch data film dari API jika tidak ada state navigasi
       const fetchMovieDetails = async () => {
         if (!id) {
           navigate("/movie");
@@ -144,7 +143,7 @@ const MovieDetails = () => {
             })
           );
 
-          // Fetch credits for director and cast
+          // Fetch data kredit (pemain dan sutradara)
           const creditsResponse = await fetch(
             `${BASE_URL}/movie/${id}/credits?api_key=${API_KEY}&language=en-US`
           );
@@ -166,7 +165,7 @@ const MovieDetails = () => {
       fetchMovieDetails();
     }
 
-    // Fetch genres
+    // Mengambil data genre film
     const fetchGenres = async () => {
       try {
         const response = await fetch(
@@ -186,20 +185,23 @@ const MovieDetails = () => {
     fetchGenres();
   }, [id, navigate, location.state, dispatch]);
 
-  // Helper functions
+  // Fungsi-fungsi pembantu
+  // Memformat durasi film dari menit menjadi format jam dan menit
   const formatRuntime = (minutes) => {
     if (!minutes) return "Unknown";
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    return `${hours} hours ${mins} minutes`;
+    return `${hours}h ${mins}m`;
   };
 
+  // Memformat tanggal ke format yang lebih mudah dibaca
   const formatDate = (dateString) => {
     if (!dateString || dateString === "choose") return "Unknown";
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  // Memfilter bioskop berdasarkan kota yang dipilih
   const filterCinemasByCity = (city) => {
     const cityHash = city
       .split("")
@@ -214,13 +216,15 @@ const MovieDetails = () => {
       : filteredCinemas;
   };
 
+  // Memeriksa ketersediaan bioskop berdasarkan filter yang dipilih
   const isCinemaAvailable = (cinemaId) => {
     if (!hasSelectedDate || !hasSelectedTime || !hasSelectedCity) return true;
     const availableCinemas = filterCinemasByCity(bookingCity);
     return availableCinemas.some((cinema) => cinema.id === cinemaId);
   };
 
-  // Event handlers with Redux integration
+  // Penanganan event
+  // Menangani aksi filter bioskop
   const handleFilter = () => {
     if (bookingDate === "choose") {
       setFilterMessage("Please select a show date first!");
@@ -256,6 +260,7 @@ const MovieDetails = () => {
     setActivePage(1);
   };
 
+  // Menangani pemilihan bioskop
   const handleCinemaSelect = (cinemaId) => {
     const selectedCinemaObject = allCinemas.find(
       (cinema) => cinema.id === cinemaId
@@ -285,12 +290,14 @@ const MovieDetails = () => {
     );
   };
 
+  // Menangani perubahan halaman pagination
   const handlePageChange = (page) => {
     setActivePage(page);
     setSelectedCinema("");
     setShowFilterMessage(false);
   };
 
+  // Menangani perubahan tanggal
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
     setShowFilterMessage(false);
@@ -312,6 +319,7 @@ const MovieDetails = () => {
     }
   };
 
+  // Menangani perubahan waktu
   const handleTimeChange = (e) => {
     const selectedTime = e.target.value;
     setShowFilterMessage(false);
@@ -333,6 +341,7 @@ const MovieDetails = () => {
     }
   };
 
+  // Menangani perubahan kota
   const handleCityChange = (e) => {
     const selectedCity = e.target.value;
     setShowFilterMessage(false);
@@ -354,6 +363,7 @@ const MovieDetails = () => {
     }
   };
 
+  // Menangani aksi pemesanan tiket
   const handleBookNow = () => {
     if (bookingDate === "choose") {
       setFilterMessage("Please select a date first!");
@@ -394,6 +404,7 @@ const MovieDetails = () => {
     navigate("/seat-order");
   };
 
+  // Mendapatkan daftar bioskop yang akan ditampilkan berdasarkan filter dan pagination
   const getCinemasToDisplay = () => {
     if (isFiltered && filteredCinemas) {
       const startIndex = (activePage - 1) * 4;
@@ -403,6 +414,7 @@ const MovieDetails = () => {
     return cinemasByPage[activePage] || [];
   };
 
+  // Menghitung total halaman pagination
   const getTotalPages = () => {
     if (isFiltered && filteredCinemas) {
       return Math.ceil(filteredCinemas.length / 4);
@@ -412,6 +424,7 @@ const MovieDetails = () => {
 
   const today = new Date().toISOString().split("T")[0];
 
+  // Tampilan loading ketika data sedang diambil
   if (loading) {
     return (
       <div className="bg-white-100 min-h-screen">
@@ -424,6 +437,7 @@ const MovieDetails = () => {
     );
   }
 
+  // Tampilan error jika film tidak ditemukan
   if (!movie) {
     return (
       <div className="bg-white-100 min-h-screen">
@@ -440,7 +454,7 @@ const MovieDetails = () => {
     <div className="bg-white-100 min-h-screen">
       <Header />
 
-      {/* Movie Backdrop */}
+      {/* Gambar Latar Film */}
       <div
         className="w-full h-[200px] xs:h-[250px] sm:h-[300px] md:h-[350px] lg:h-[415px] bg-cover bg-center"
         style={{
@@ -450,11 +464,11 @@ const MovieDetails = () => {
         }}
       ></div>
 
-      {/* Movie Details Container */}
+      {/* Kontainer Detail Film */}
       <div className="mx-3 xs:mx-4 md:mx-8 lg:mx-[70px] p-3 xs:p-4 md:p-6 bg-white mt-4 xs:mt-6 rounded-md shadow-sm">
-        {/* Movie Info Section */}
+        {/* Bagian Informasi Film */}
         <div className="relative flex flex-col md:flex-row md:items-start mb-0 gap-4 md:gap-6">
-          {/* Movie Poster */}
+          {/* Poster Film */}
           <div className="relative -mt-16 xs:-mt-20 md:-mt-32 lg:-mt-40 w-full max-w-[180px] xs:max-w-[220px] md:max-w-[264px] mx-auto md:mx-0 z-10">
             <img
               src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
@@ -463,13 +477,13 @@ const MovieDetails = () => {
             />
           </div>
 
-          {/* Movie Details */}
+          {/* Detail Film */}
           <div className="flex-1 mt-2 xs:mt-4 md:mt-0">
             <h2 className="text-xl xs:text-2xl md:text-3xl font-bold text-center md:text-left">
               {movie.title}
             </h2>
 
-            {/* Genres */}
+            {/* Genre Film */}
             <div className="flex flex-wrap justify-center md:justify-start gap-2 mt-2">
               {movie.genres.map((genre) => (
                 <span
@@ -481,7 +495,7 @@ const MovieDetails = () => {
               ))}
             </div>
 
-            {/* Info Grid */}
+            {/* Grid Informasi Film */}
             <div className="mt-4 grid grid-cols-1 xs:grid-cols-2 gap-3 xs:gap-4 text-center xs:text-left">
               <div className="space-y-1">
                 <p className="text-gray-500 text-xs xs:text-sm">Release Date</p>
@@ -511,7 +525,7 @@ const MovieDetails = () => {
           </div>
         </div>
 
-        {/* Synopsis Section */}
+        {/* Bagian Sinopsis */}
         <div className="mt-5 xs:mt-6 md:mt-8">
           <h3 className="text-lg xs:text-xl font-semibold">Synopsis</h3>
           <p className="text-sm xs:text-base text-gray-700 mt-2">
@@ -519,12 +533,12 @@ const MovieDetails = () => {
           </p>
         </div>
 
-        {/* Booking Section */}
+        {/* Bagian Pemesanan */}
         <div className="mt-8">
           <h1 className="text-2xl font-bold mb-8">Book Tickets</h1>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            {/* Date Picker */}
+            {/* Pemilih Tanggal */}
             <div>
               <h2 className="font-medium mb-2">Choose Date</h2>
               <div className="relative flex items-center">
@@ -589,7 +603,7 @@ const MovieDetails = () => {
               </div>
             </div>
 
-            {/* Time Picker */}
+            {/* Pemilih Waktu */}
             <div>
               <h2 className="font-medium mb-2">Choose Time</h2>
               <div className="relative flex items-center">
@@ -634,7 +648,7 @@ const MovieDetails = () => {
               </div>
             </div>
 
-            {/* Location Picker */}
+            {/* Pemilih Lokasi */}
             <div>
               <h2 className="font-medium mb-2">Choose Location</h2>
               <div className="relative flex items-center">
@@ -683,7 +697,7 @@ const MovieDetails = () => {
             </div>
           </div>
 
-          {/* Filter Button */}
+          {/* Tombol Filter */}
           <button
             onClick={handleFilter}
             className={`cursor-pointer w-full md:w-auto px-8 py-3 rounded-md text-white font-medium transition ${
@@ -702,14 +716,14 @@ const MovieDetails = () => {
             Filter
           </button>
 
-          {/* Filter Message */}
+          {/* Pesan Filter */}
           {showFilterMessage && (
             <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-blue-800">
               {filterMessage}
             </div>
           )}
 
-          {/* Active Filter Indicator */}
+          {/* Indikator Filter Aktif */}
           {isFiltered && (
             <div className="mt-4 flex items-center gap-2">
               <span className="text-sm text-gray-700">
@@ -731,7 +745,7 @@ const MovieDetails = () => {
           )}
         </div>
 
-        {/* Cinema Selection Section */}
+        {/* Bagian Pemilihan Bioskop */}
         <div className="mt-10">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold">Choose Cinema</h2>
@@ -757,8 +771,6 @@ const MovieDetails = () => {
                     className={`relative h-32 rounded-md cursor-pointer border-2 p-4 flex items-center justify-center ${
                       selectedCinema === cinema.id
                         ? "border-blue-600 bg-blue-500"
-                        : cinema.id === "hiflix-1"
-                        ? "bg-blue-600 border-blue-600"
                         : "border-gray-200 hover:border-blue-300"
                     }`}
                   >
@@ -766,14 +778,16 @@ const MovieDetails = () => {
                       src={cinema.image}
                       alt={cinema.name}
                       className={`max-h-12 object-contain ${
-                        cinema.id === "hiflix-1" ? "brightness-0 invert" : ""
+                        selectedCinema === cinema.id && cinema.id === "hiflix-1"
+                          ? "brightness-0 invert"
+                          : ""
                       }`}
                     />
                   </button>
                 ))}
               </div>
 
-              {/* Pagination */}
+              {/* Paginasi */}
               {getTotalPages() > 1 && (
                 <div className="flex justify-center gap-2 mb-8">
                   {[...Array(getTotalPages())].map((_, i) => (
@@ -794,7 +808,7 @@ const MovieDetails = () => {
             </>
           )}
 
-          {/* Book Now Button */}
+          {/* Tombol pesan sekarang */}
           <div className="flex justify-center mt-6">
             <button
               onClick={handleBookNow}
@@ -813,7 +827,7 @@ const MovieDetails = () => {
                 bookingCity === "choose"
               }
             >
-              Book Now
+              Pesan Sekarang
             </button>
           </div>
         </div>
