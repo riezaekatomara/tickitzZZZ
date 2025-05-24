@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Calendar, Clock, Plus } from "lucide-react";
-import HeaderDashboard from "../components/HeaderDashboard";
+import HeaderDashboard from "../../components/HeaderDashboard";
 
 const AddNewMovie = () => {
   const [formData, setFormData] = useState({

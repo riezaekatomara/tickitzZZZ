@@ -9,7 +9,7 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import "../styles/button-animations.css";
 
-const Home = () => {
+const HomePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const orderState = useSelector((state) => state.order);
@@ -371,4 +371,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;

@@ -1,9 +1,9 @@
 import React from "react";
-import Header from "../components/Header.jsx";
-import Footer from "../components/Footer.jsx";
-import Logo2 from "../assets/svg/logo-tickitz2.svg";
-import PanahBiru from "../assets/svg/panah-biru-kebawah.svg";
-import QRCode from "../assets/png/qrcode.png";
+import Header from "../../components/Header.jsx";
+import Footer from "../../components/Footer.jsx";
+import Logo2 from "../../assets/svg/logo-tickitz2.svg";
+import PanahBiru from "../../assets/svg/panah-biru-kebawah.svg";
+import QRCode from "../../assets/png/qrcode.png";
 
 const TickitResult = () => {
   // Fungsi untuk mendownload QR Code

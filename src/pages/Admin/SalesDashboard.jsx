@@ -1,5 +1,5 @@
 import React from "react";
-import HeaderDashboard from "../components/HeaderDashboard.jsx";
+import HeaderDashboard from "../../components/HeaderDashboard.jsx";
 
 const SalesDashboard = () => {
   return (

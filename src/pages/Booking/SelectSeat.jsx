@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router";
-import Header from "../components/Header.jsx";
-import Footer from "../components/Footer.jsx";
-import Centang from "../assets/svg/centang-date.svg";
+import Header from "../../components/Header.jsx";
+import Footer from "../../components/Footer.jsx";
+import Centang from "../../assets/svg/centang-date.svg";
 
 const SeatOrder = () => {
   const location = useLocation();

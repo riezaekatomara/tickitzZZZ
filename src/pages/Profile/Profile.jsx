@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import HeaderProfile from "../components/HeaderProfile";
-import TitikTiga from "../assets/svg/titik-tiga.svg";
-import Star from "../assets/svg/star.svg";
-import QRCode from "../assets/svg/qrcode.svg";
-import { useUser } from "../context/userContext.jsx";
+import HeaderProfile from "../../components/HeaderProfile.jsx";
+import TitikTiga from "../../assets/svg/titik-tiga.svg";
+import Star from "../../assets/svg/star.svg";
+import QRCode from "../../assets/svg/qrcode.svg";
+import { useUser } from "../../context/userContext.jsx";
 import {
   saveUserDataToLocalStorage,
   getUserDataFromLocalStorage,
-} from "../utils/localStorageUtils.js";
+} from "../../utils/localStorageUtils.js";
 
 const Profile = () => {
   const { userData, updateUserData } = useUser();

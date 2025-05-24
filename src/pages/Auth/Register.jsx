@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import Logo from "../assets/svg/logo-tickitz2.svg";
+import Logo from "../../assets/svg/logo-tickitz2.svg";
 
 function Register() {
   const navigate = useNavigate();

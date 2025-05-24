@@ -1,15 +1,15 @@
-import Register from "./pages/Register.jsx";
-import Login from "./pages/Login.jsx";
-import Home from "./pages/Home.jsx";
-import Movie from "./pages/Movie.jsx";
-import MovieDetails from "./pages/MovieDetails.jsx";
-import SeatOrder from "./pages/SeatOrder.jsx";
-import PaymentInfo from "./pages/PaymentInfo.jsx";
-import TicketResult from "./pages/TicketResult.jsx";
-import Profile from "./pages/Profile.jsx";
-import SalesDashboard from "./pages/SalesDashboard.jsx";
-import Admin from "./pages/Admin.jsx";
-import AddNewMovie from "./pages/AddNewMovie.jsx";
+import Register from "./pages/Auth/Register.jsx";
+import Login from "./pages/Auth/Login.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import AllMovie from "./pages/Movie/AllMovie.jsx";
+import MovieDetails from "./pages/Movie/MovieDetails.jsx";
+import SelectSeat from "./pages/Booking/SelectSeat.jsx";
+import PaymentInfo from "./pages/Payment/PaymentInfo.jsx";
+import TicketResult from "./pages/Payment/TicketResult.jsx";
+import Profile from "./pages/Profile/Profile.jsx";
+import SalesDashboard from "./pages/Admin/SalesDashboard.jsx";
+import Admin from "./pages/Admin/Admin.jsx";
+import AddNewMovie from "./pages/Admin/AddNewMovie.jsx";
 import { Routes, Route } from "react-router";
 import { UserProvider } from "./context/userContext.jsx";
 
@@ -17,12 +17,12 @@ function App() {
   return (
     <UserProvider>
       <Routes>
-        <Route index element={<Home />} />
+        <Route index element={<HomePage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/movie" element={<Movie />} />
+        <Route path="/movie" element={<AllMovie />} />
         <Route path="/movie-details/:id" element={<MovieDetails />} />{" "}
-        <Route path="/seat-order" element={<SeatOrder />} />{" "}
+        <Route path="/seat-order" element={<SelectSeat />} />{" "}
         <Route path="/payment-info" element={<PaymentInfo />} />
         <Route path="/ticket-result" element={<TicketResult />} />
         <Route path="/profile" element={<Profile />} />
