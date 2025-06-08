@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
-import Centang from "../assets/svg/centang-date.svg";
+import Centang from "../assets/images/svg/centang-date.svg";
 import {
   selectSelectedMovie,
   selectSelectedDate,

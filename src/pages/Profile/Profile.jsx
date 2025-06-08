@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import HeaderProfile from "../../components/HeaderProfile.jsx";
-import TitikTiga from "../../assets/svg/titik-tiga.svg";
-import Star from "../../assets/svg/star.svg";
-import QRCode from "../../assets/svg/qrcode.svg";
+import TitikTiga from "../../assets/images/svg/titik-tiga.svg";
+import Star from "../../assets/images/svg/star.svg";
+import QRCode from "../../assets/images/svg/qrcode.svg";
 import { useUser } from "../../context/userContext.jsx";
 import {
   saveUserDataToLocalStorage,

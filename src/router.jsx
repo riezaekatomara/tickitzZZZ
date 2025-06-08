@@ -10,10 +10,10 @@ import Profile from "./pages/Profile/Profile.jsx";
 import SalesDashboard from "./pages/Admin/SalesDashboard.jsx";
 import Admin from "./pages/Admin/Admin.jsx";
 import AddNewMovie from "./pages/Admin/AddNewMovie.jsx";
-import { Routes, Route } from "react-router";
+import { Routes, Route } from "react-router-dom"; // ✅ HAPUS BrowserRouter dari sini
 import { UserProvider } from "./context/userContext.jsx";
 
-function App() {
+function Router() {
   return (
     <UserProvider>
       <Routes>
@@ -21,8 +21,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/movie" element={<AllMovie />} />
-        <Route path="/movie-details/:id" element={<MovieDetails />} />{" "}
-        <Route path="/seat-order" element={<SelectSeat />} />{" "}
+        <Route path="/movie-details/:id" element={<MovieDetails />} />
+        <Route path="/seat-order" element={<SelectSeat />} />
         <Route path="/payment-info" element={<PaymentInfo />} />
         <Route path="/ticket-result" element={<TicketResult />} />
         <Route path="/profile" element={<Profile />} />
@@ -34,4 +34,4 @@ function App() {
   );
 }
 
-export default App;
+export default Router;

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router";
-import Logo from "../../assets/svg/logo-tickitz2.svg";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Logo from "../../assets/images/svg/logo-tickitz2.svg";
 
 function Login() {
   const navigate = useNavigate();

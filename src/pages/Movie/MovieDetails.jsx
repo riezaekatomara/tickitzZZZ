@@ -10,9 +10,9 @@ import {
 } from "../../redux/slices/orderSlice.js";
 import Header from "../../components/Header.jsx";
 import Footer from "../../components/Footer.jsx";
-import Ebv from "../../assets/svg/ebv.svg";
-import Hiflix from "../../assets/svg/hiflix.svg";
-import Cine from "../../assets/svg/cine.svg";
+import Ebv from "../../assets/images/svg/ebv.svg";
+import Hiflix from "../../assets/images/svg/hiflix.svg";
+import Cine from "../../assets/images/svg/cine.svg";
 
 const MovieDetails = () => {
   const { id } = useParams();

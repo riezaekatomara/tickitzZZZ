@@ -2,7 +2,7 @@ import { useState } from "react";
 import { EyeIcon, Pencil, TrashIcon } from "lucide-react";
 import { Link } from "react-router";
 import HeaderDashboard from "../../components/HeaderDashboard.jsx";
-import Navi from "../../assets/svg/navigation.svg";
+import Navi from "../../assets/images/svg/navigation.svg";
 
 const Admin = () => {
   const initialMovies = [

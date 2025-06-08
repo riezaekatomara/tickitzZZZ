@@ -1,9 +1,9 @@
-import logo from "../assets/svg/logo-tickitz.svg";
-import MenuIcon from "../assets/svg/menu-right.svg";
+import logo from "../assets/images/svg/logo-tickitz.svg";
+import MenuIcon from "../assets/images/svg/menu-right.svg";
 import { useState } from "react";
 import { Link } from "react-router";
-import Navi from "../assets/svg/navigation.svg";
-import Search from "../assets/svg/search.svg";
+import Navi from "../assets/images/svg/navigation.svg";
+import Search from "../assets/images/svg/search.svg";
 
 function HeaderProfile() {
   const [isNavVisible, setIsNavVisible] = useState(false);

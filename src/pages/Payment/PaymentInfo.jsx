@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import Header from "../../components/Header.jsx";
 import Footer from "../../components/Footer.jsx";
-import GooglePay from "../../assets/svg/google-pay.svg";
-import Visa from "../../assets/svg/visa.svg";
-import Gopay from "../../assets/svg/gopay.svg";
-import Paypal from "../../assets/svg/paypal.svg";
-import Dana from "../../assets/svg/dana.svg";
-import Bca from "../../assets/svg/bca.svg";
-import Bri from "../../assets/svg/bri.svg";
-import Ovo from "../../assets/svg/ovo.svg";
+import GooglePay from "../../assets/images/svg/google-pay.svg";
+import Visa from "../../assets/images/svg/visa.svg";
+import Gopay from "../../assets/images/svg/gopay.svg";
+import Paypal from "../../assets/images/svg/paypal.svg";
+import Dana from "../../assets/images/svg/dana.svg";
+import Bca from "../../assets/images/svg/bca.svg";
+import Bri from "../../assets/images/svg/bri.svg";
+import Ovo from "../../assets/images/svg/ovo.svg";
 
 const PaymentInfo = () => {
   const navigate = useNavigate();

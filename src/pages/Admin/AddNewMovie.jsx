@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Calendar, Clock, Plus } from "lucide-react";
+import { useState } from "react";
+import { Calendar, Plus } from "lucide-react";
 import HeaderDashboard from "../../components/HeaderDashboard";
 
 const AddNewMovie = () => {
